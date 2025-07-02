@@ -1,0 +1,62 @@
+@font-face {
+    font-family: 'Gama Sans';
+    src: url('/Gama-Sans-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gama Sans';
+    src: url('/Gama-Sans-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gama Sans';
+    src: url('/Gama-Sans-Italic.otf') format('opentype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gama Sans';
+    src: url('/Gama-Sans-Bold-Italic.otf') format('opentype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gama Sans Light';
+    src: url('/Gama-Sans-light.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gama Serif';
+    src: url('/Gama-Serif-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gama Serif';
+    src: url('/Gama-Serif-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gama Serif';
+    src: url('/Gama-Serif-Italic.otf') format('opentype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Gama Serif';
+    src: url('/Gama-Serif-Bold-Italic.otf') format('opentype');
+    font-weight: bold;
+    font-style: italic;
+}
