@@ -16,7 +16,7 @@ public function updateFeature(Request $request)
     if (!$nama) return response()->json(['error' => 'Nama tidak ditemukan.'], 400);
 
     // Update berdasarkan nama
-    DB::table('Bangunan_UGM')
+    DB::table('Bangunan_UGM2')
         ->where('nama', $nama)
         ->update([
             'geom' => DB::raw("ST_SetSRID(ST_GeomFromGeoJSON('$geom'), 4326)")
@@ -38,7 +38,7 @@ public function deleteFeature(Request $request)
     if ($geometry['type'] === 'Point') {
         DB::table('Titik_UGM')->where('Nama', $nama)->delete();
     } elseif ($geometry['type'] === 'Polygon') {
-        DB::table('Bangunan_UGM')->where('nama', $nama)->delete();
+        DB::table('Bangunan_UGM2')->where('nama', $nama)->delete();
     } else {
         return response()->json(['error' => 'Tipe geometri tidak didukung.'], 400);
     }

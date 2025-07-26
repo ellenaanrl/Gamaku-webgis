@@ -24,9 +24,11 @@ class DamageReportController extends Controller
             'email' => 'required|email|max:255',
             'category' => 'required|string|max:255',
             'subcategory' => 'required|string|max:255',
+            'floor'=> 'required|string|max:255',
             'description' => 'required|string',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
+            'lokasi' => 'required|string|max:255',
             'photo' => 'required|image|max:2048', // max 2MB
         ]);
 
@@ -50,9 +52,11 @@ class DamageReportController extends Controller
                 'id' => Auth::id(),
                 'category' => $request->category,
                 'subcategory' => $request->subcategory,
+                'floor' => $request->floor,
                 'description' => $request->description,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
+                'lokasi' => $request->lokasi,
                 'photo_path' => $photoPath,
                 'status' => 'pending'
             ]);
@@ -74,7 +78,8 @@ class DamageReportController extends Controller
                 ->with('error', 'Failed to submit report. Please try again.');
         }
 
-        return redirect()->back()->with('report_submitted', true);
+        // Redirect to status_report page after successful submission
+        return redirect()->route('status.report')->with('report_submitted', true);
     }
 
     public function index()
@@ -114,7 +119,9 @@ class DamageReportController extends Controller
                     'reporter_name' => $report->reporter_name,
                     'category' => $report->category,
                     'subcategory' => $report->subcategory,
+                    'floor' => $report->floor,
                     'description' => $report->description,
+                    'lokasi' => $report->lokasi,
                     'status' => $report->status,
                     'created_at' => $report->created_at,
                     'photo_path' => $report->photo_path,

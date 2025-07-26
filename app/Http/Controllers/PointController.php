@@ -32,12 +32,13 @@ class PointController extends Controller
             // Tambahkan ke daftar fitur
             $features[] = [
                 'type' => 'Feature',
+                'id' => $point->id,
                 'geometry' => $geojson,
                 'properties' => [
-                    'Nama' => $point->Nama ?? '',
-                    'Jenis_Bang' => $point->Jenis_Bang ?? '',
-                    'Unit' => $point->Unit ?? '',
-                    'Dokumentasi' => asset($point->Dokumentasi),
+                    'nama' => $point->nama ?? '',
+                    'jenis_bang' => $point->jenis_bang ?? '',
+                    'unit' => $point->unit ?? '',
+                    'dokumentasi' => asset($point->dokumentasi),
                 ],
             ];
         }

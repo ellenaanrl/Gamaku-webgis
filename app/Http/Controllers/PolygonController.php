@@ -10,7 +10,7 @@ class PolygonController extends Controller
 {
     public function index()
 {
-    $data = DB::table('Bangunan_UGM')
+    $data = DB::table('Bangunan_UGM2')
         ->select('nama', DB::raw('ST_AsGeoJSON(ST_Transform(geom, 4326)) as geom'))
         ->get();
 
@@ -19,7 +19,8 @@ class PolygonController extends Controller
             'type' => 'Feature',
             'geometry' => json_decode($item->geom),
             'properties' => [
-                'nama' => $item->nama
+                'nama' => $item->nama,
+                'jml_lantai' => $item->jml_lantai ?? null, // Assuming jml_lantai is a column in your table
             ]
         ];
     });

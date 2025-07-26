@@ -17,9 +17,11 @@ class DamageReport extends Model
         'email',
         'category',
         'subcategory',
+        'floor',
         'description',
         'latitude',
         'longitude',
+        'lokasi',
         'photo_path',
         'status',
         'user_id'

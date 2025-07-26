@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Informasi Jalan - Gamaku WebGIS</title>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -42,24 +42,24 @@
                         <h1 class="text-2xl font-bold text-[#fdcb2c]">Gamaku WebGIS</h1>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="/" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium">Beranda</a>
-                        <a href="/map" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium">Peta</a>
+                        <a href="/" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium"><i class="fa-solid fa-house"></i> Beranda</a>
+                        <a href="/map" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium"><i class="fa-solid fa-map mr-1"></i>Peta</a>
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open" @click.away="open = false"
                                 class="text-[#fdcb2c] px-3 py-2 text-sm font-medium flex items-center focus:outline-none">
-                                Tabel
+                                <i class="fa-solid fa-table mr-1"></i>Tabel
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
                             <div x-show="open" x-transition
                                 class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                                <a href="/info" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Tabel Titik Bangunan</a>
-                                <a href="/infojalan" class="block px-4 py-2 text-sm text-[#fdcb2c] hover:bg-gray-100">Tabel Polygon Jalan</a>
-                                <a href="/infobangunan" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Tabel Polygon Bangunan</a>
+                                <a href="/info" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-location-dot"></i> Tabel Titik Bangunan</a>
+                                <a href="/infojalan" class="block px-4 py-2 text-sm text-[#fdcb2c] hover:bg-gray-100"><i class="fa-solid fa-road"></i> Tabel Polygon Jalan</a>
+                                <a href="/infobangunan" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-draw-polygon"></i> Tabel Polygon Bangunan</a>
                             </div>
                         </div>
-                        <a href="/management" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium">Laporkan Kerusakan</a>
+                        <a href="/management" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium"><i class="fa-solid fa-flag"></i> Laporkan Kerusakan</a>
                         @auth
                         {{-- Jika user login --}}
                         <div class="flex items-center space-x-6">

@@ -17,10 +17,10 @@ class Point extends Model
     
     // Fillable columns
     protected $fillable = [
-        'Nama',
-        'Unit', 
-        'Jenis_Bang',
-        'Dokumentasi'
+        'nama',
+        'unit', 
+        'jenis_bang',
+        'dokumentasi'
     ];
     
     // Note: We're excluding 'geom' from fillable since it's geometry data

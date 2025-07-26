@@ -15,10 +15,18 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Admin',
+            'name' => 'Admin WebGIS',
             'email' => 'admin@example.com',
-            'password' => Hash::make('admin123'), // password yang dienkripsi
+            'password' => Hash::make('password'), // password yang dienkripsi
             'role' => 'admin', // pastikan kolom 'role' sudah ditambahkan ke tabel users
         ]);
+
+        User::create([
+        'name' => 'Admin 2',
+        'email' => 'Gamakuugm@gmail.com',
+        'password' => Hash::make('password'),
+        'role' => 'admin',
+    ]);
+
     }
 }

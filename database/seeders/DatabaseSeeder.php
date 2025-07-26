@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
 
         // Create a test admin user
         User::factory()->create([
-            'name' => 'ellena',
-            'email' => 'ellenanrl@gmail.com',
+            'name' => 'Admin WebGIS',
+            'email' => 'admin@example.com',
             'password' => bcrypt('password'),
             'role' => 'admin'
         ]);

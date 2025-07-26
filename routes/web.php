@@ -60,8 +60,6 @@ Route::get('/info', [PointController::class, 'showTable']);
     // })->middleware(['auth']); // Hapus dulu 'role:admin'
 
 
-
-
 // // Admin routes
 Route::middleware(['auth', \App\Http\Middleware\RoleMiddleware::class,])->group(function () {
     Route::get('/report', function () {
@@ -105,7 +103,9 @@ Route::post('/admin/store-jalan', [MapadminController::class, 'storeJalan']);
 Route::post('/admin/update-feature', [MapadminController::class, 'updateFeature']);
 Route::post('/admin/delete-feature', [MapadminController::class, 'deleteFeature']);
 
+Route::put('/admin/update-point/{id}', [DrawController::class, 'updatePoint']);
 
+Route::delete('/admin/delete-point/{id}', [DrawController::class, 'deletePoint']);
 
 
 // Route::post('/admin/update-geometry', [AdminController::class, 'updateGeometry']);
@@ -142,6 +142,16 @@ Route::get('/polygon', [PolygonController::class, 'index']);
 
 Route::get('/jalan', [JalanController::class, 'index']);
 
+// use Illuminate\Support\Facades\Mail;
+
+// Route::get('/test-email', function () {
+//     Mail::raw('Ini tes email dari Laravel', function ($message) {
+//         $message->to('Gamakuugm@gmail.com')
+//                 ->subject('Tes Email Laravel');
+//     });
+
+//     return 'Email terkirim!';
+// });
 
 
 // // // routes/web.php
