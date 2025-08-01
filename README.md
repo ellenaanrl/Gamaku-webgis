@@ -103,7 +103,10 @@ Atau hanya migrate saja:
 ```bash
 php artisan migrate
 ```
-
+hanya seed saja:
+```bash
+php artisan db:seed
+```
 Menjalankan seeder tertentu:
 
 ```bash
