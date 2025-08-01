@@ -49,7 +49,6 @@ class DamageReportController extends Controller
                 'phone' => $request->phone,
                 'email' => $request->email,
                 'user_id' => Auth::id(),
-                'id' => Auth::id(),
                 'category' => $request->category,
                 'subcategory' => $request->subcategory,
                 'floor' => $request->floor,
@@ -63,20 +62,20 @@ class DamageReportController extends Controller
 
             Log::info('Damage report created successfully', ['report_id' => $report->id]);
 
-            // ✅ Kirim email ke admin
+            
             try {
-                Mail::to('admin@example.com')->send(new NewReportNotification($report));
+                Mail::to('gamakuugm@gmail.com')->send(new NewReportNotification($report));
                 Log::info('Email notification sent to admin');
             } catch (\Exception $e) {
                 Log::error('Failed to send email: ' . $e->getMessage());
             }
 
-        } catch (\Exception $e) {
-            Log::error('Failed to create damage report: ' . $e->getMessage());
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Failed to submit report. Please try again.');
-        }
+  } catch (\Exception $e) {
+    Log::error('Failed to create damage report: ' . $e->getMessage());
+    return redirect()->back()
+        ->withInput()
+        ->with('error', 'Failed to submit report: ' . $e->getMessage()); // DEBUG
+}
 
         // Redirect to status_report page after successful submission
         return redirect()->route('status.report')->with('report_submitted', true);

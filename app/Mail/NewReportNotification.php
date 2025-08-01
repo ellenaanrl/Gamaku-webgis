@@ -20,6 +20,7 @@ class NewReportNotification extends Mailable
     public function build()
     {
         return $this->subject('Laporan Kerusakan Baru Diterima')
-                    ->view('emails.report_notification');
+                    ->view('emails.report_notification')
+                    ->with(['report' => $this->report]);
     }
 }
