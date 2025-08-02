@@ -215,8 +215,8 @@
                                 <span class="text-blue-600">Gunakan Lokasi Saya</span>
                             </button>
                             <div id="map" class="rounded-lg border border-gray-300 mb-2"></div>
-                            <input type="hidden" name="latitude" id="latitude" required>
-                            <input type="hidden" name="longitude" id="longitude" required>
+                            <!-- <input type="hidden" name="latitude" id="latitude" required>
+                            <input type="hidden" name="longitude" id="longitude" required> -->
                             <p class="text-sm text-gray-500">Klik pada peta untuk menandai lokasi kerusakan</p>
                         </div>
 
