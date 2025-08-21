@@ -54,7 +54,7 @@
                             <div x-show="open" x-transition
                                 class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                                 <a href="/info" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-location-dot"></i> Tabel Titik Bangunan</a>
-                                <a href="/infojalan" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-road"></i> Tabel Polygon Jalan</a>
+                                <a href="/infojalan" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-road"></i> Tabel informasi jalan</a>
                                 <a href="/infobangunan" class="block px-4 py-2 text-sm text-[#fdcb2c] hover:bg-gray-100"><i class="fa-solid fa-draw-polygon"></i> Tabel Polygon Bangunan</a>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium">
-                                    Logout
+                                    <i class="fa-solid fa-right-from-bracket"></i> Logout
                                 </button>
                             </form>
 

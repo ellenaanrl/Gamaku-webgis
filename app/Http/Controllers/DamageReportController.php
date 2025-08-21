@@ -123,7 +123,7 @@ class DamageReportController extends Controller
                     'lokasi' => $report->lokasi,
                     'status' => $report->status,
                     'created_at' => $report->created_at,
-                    'photo_path' => $report->photo_path,
+                    'photo_path' => $report->photo_path ? Storage::url($report->photo_path) : null,
                 ]
             ];
         });
