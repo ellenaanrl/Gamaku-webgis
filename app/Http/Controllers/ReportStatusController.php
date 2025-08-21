@@ -14,4 +14,5 @@ class ReportStatusController extends Controller
             ->get();
         return view('status-report', compact('reports'));
     }
+    
 }

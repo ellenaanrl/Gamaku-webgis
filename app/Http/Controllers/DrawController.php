@@ -37,7 +37,7 @@ class DrawController extends Controller
 
             $geojson = json_encode($geometry);
 
-            DB::table('Bangunan_UGM2')->insert([
+            DB::table('Bangunan_UGM4')->insert([
                 'nama' => $nama,
                 'jml_lantai' => $properties['jml_lantai'] ?? 1,
                 'geom' => DB::raw("ST_Transform(ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON('{$geojson}'), 4326)), 32749)"),

@@ -11,6 +11,7 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -25,24 +26,67 @@
         }
     </script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const indicators = document.querySelectorAll('.carousel-indicator');
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.style.display = i === index ? 'block' : 'none';
+                    indicators[i].classList.toggle('bg-opacity-70', i === index);
+                    indicators[i].classList.toggle('bg-opacity-40', i !== index);
+                });
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                showSlide(currentSlide);
+            }
+
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                showSlide(currentSlide);
+            }
+
+            // Inisialisasi pertama
+            showSlide(currentSlide);
+
+            // Kontrol tombol manual
+            document.getElementById('next-banner').addEventListener('click', nextSlide);
+            document.getElementById('prev-banner').addEventListener('click', prevSlide);
+
+            // Auto slide setiap 5 detik
+            setInterval(nextSlide, 4000);
+        });
+    </script>
+
 
 </head>
 
 <body class="antialiased bg-gray-50 font-sans">
     <div class="relative min-h-screen flex flex-col">
         <!-- Header/Navigation -->
-        <nav class="bg-[#083d62] shadow-sm">
-            <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-                <div class="flex flex-col sm:flex-row justify-between h-auto sm:h-16 py-2 sm:py-0">
-                    <div class="flex items-center space-x-2 mb-2 sm:mb-0">
+        <nav class="bg-[#083d62] shadow-sm sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo and Title -->
+                    <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
                         @if(file_exists(public_path('images/logo kuningg.png')))
-                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-10 sm:h-12 w-auto object-contain" />
+                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         @endif
-                        <h1 class="text-xl sm:text-2xl font-bold text-[#fdcb2c]">Gamaku WebGIS</h1>
+                        <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
-                    <div class="flex flex-wrap items-center space-x-2 sm:space-x-4">
-                        <a href="/" class="text-[#fdcb2c] px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium"><i class="fa-solid fa-house"></i> Beranda</a>
-                        <a href="/map" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium flex items-center focus:outline-none"><i class="fa-solid fa-map mr-1"></i> Peta</a>
+
+                    <div class="hidden lg:flex items-center space-x-4">
+                        <a href="/" class="text-[#fdcb2c] px-3 py-2 text-sm font-medium whitespace-nowrap">
+                            <i class="fa-solid fa-house"></i> Beranda
+                        </a>
+                        <a href="/map" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium whitespace-nowrap">
+                            <i class="fa-solid fa-map mr-1"></i>Peta
+                        </a>
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open" @click.away="open = false"
                                 class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium flex items-center focus:outline-none">
@@ -52,31 +96,94 @@
                                 </svg>
                             </button>
                             <div x-show="open" x-transition
-                                class="absolute right-0 mt-2 w-40 sm:w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                                <a href="/info" class="block px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-location-dot"></i> Tabel Titik Bangunan</a>
-                                <a href="/infojalan" class="block px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-road"></i> Tabel Polygon Jalan</a>
-                                <a href="/infobangunan" class="block px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-draw-polygon"></i> Tabel Polygon Bangunan</a>
+                                class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                                <a href="/info" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fa-solid fa-location-dot"></i> Tabel Titik Bangunan
+                                </a>
+                                <a href="/infojalan" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fa-solid fa-road"></i> Tabel informasi jalan
+                                </a>
                             </div>
                         </div>
-                        <a href="/management" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium"><i class="fa-solid fa-flag"></i> Laporkan Kerusakan</a>
+                        <a href="/management" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium whitespace-nowrap">
+                            <i class="fa-solid fa-flag"></i> Laporkan Kerusakan
+                        </a>
+
                         @auth
-                        <div class="flex items-center space-x-2 sm:space-x-6">
+                        <div class="flex items-center space-x-4">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="bg-red-600 text-white hover:bg-red-700 px-2 sm:px-4 py-1 sm:py-2 rounded-md text-xs sm:text-sm font-medium">
-                                    Logout
+                                <button type="submit" class="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium">
+                                    <i class="fa-solid fa-right-from-bracket"></i> Logout
                                 </button>
                             </form>
-                            <div class="flex items-center text-xs sm:text-sm font-medium text-white space-x-2">
+                            <div class="flex items-center text-sm font-medium text-white space-x-2">
                                 <i class="fa-solid fa-user"></i>
-                                <span>{{ Auth::user()->name }}</span>
+                                <span class="hidden xl:inline">{{ Auth::user()->name }}</span>
                             </div>
                         </div>
                         @else
-                        <a href="{{ route('login') }}" class="bg-white text-[#083d62] hover:bg-gray-100 active:bg-[#fdcb2c] px-2 sm:px-4 py-1 sm:py-2 rounded-md text-xs sm:text-sm font-medium">
+                        <a href="{{ route('login') }}" class="bg-white text-[#083d62] hover:bg-gray-100 active:bg-[#fdcb2c] px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap">
                             Masuk/Daftar
                         </a>
                         @endauth
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <div class="lg:hidden" x-data="{ mobileOpen: false }">
+                        <button @click="mobileOpen = !mobileOpen" class="text-gray-300 hover:text-white p-2">
+                            <svg x-show="!mobileOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <svg x-show="mobileOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <!-- Mobile Menu -->
+                        <div x-show="mobileOpen" x-transition @click.away="mobileOpen = false"
+                            class="absolute top-16 left-0 right-0 bg-[#083d62] border-t border-[#0a4a75] shadow-lg z-50 mobile-menu">
+                            <div class="px-4 py-2 space-y-2">
+                                <a href="/" class="block text-[#fdcb2c] hover:bg-[#0a4a75] px-3 py-2 text-sm font-medium">
+                                    <i class="fa-solid fa-house mr-2"></i>Beranda
+                                </a>
+                                <a href="/map" class="block text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">
+                                    <i class="fa-solid fa-map mr-2"></i>Peta
+                                </a>
+                                <div class="border-l-2 border-[#fdcb2c]">
+                                    <div class="block text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">
+                                        <i class="fa-solid fa-table mr-2"></i>Tabel
+                                    </div>
+                                    <a href="/info" class="block text-gray-300 hover:bg-[#0a4a75] px-6 py-2 text-sm">
+                                        <i class="fa-solid fa-location-dot mr-2"></i>Titik Bangunan
+                                    </a>
+                                    <a href="/infojalan" class="block text-gray-300 hover:bg-[#0a4a75] px-6 py-2 text-sm">
+                                        <i class="fa-solid fa-road mr-2"></i>Polygon Jalan
+                                    </a>
+                                </div>
+                                <a href="/management" class="block text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">
+                                    <i class="fa-solid fa-flag mr-2"></i>Laporkan Kerusakan
+                                </a>
+
+                                <div class="border-t border-[#0a4a75] pt-2">
+                                    @auth
+                                    <div class="flex items-center text-white px-3 py-2 text-sm">
+                                        <i class="fa-solid fa-user mr-2"></i>{{ Auth::user()->name }}
+                                    </div>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left bg-red-600 text-white hover:bg-red-700 px-3 py-2 text-sm font-medium rounded">
+                                            <i class="fa-solid fa-right-from-bracket mr-2"></i>Logout
+                                        </button>
+                                    </form>
+                                    @else
+                                    <a href="{{ route('login') }}" class="block bg-white text-[#083d62] hover:bg-gray-100 px-3 py-2 text-sm font-medium rounded mx-3">
+                                        Masuk/Daftar
+                                    </a>
+                                    @endauth
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -127,10 +234,10 @@
                         <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
                             <h3 class="text-base sm:text-lg font-medium text-gray-900 flex items-center gap-2">
                                 <i class="fa-regular fa-compass"></i>
-                                Navigasi Peta Interaktif
+                                Peta Interaktif
                             </h3>
                             <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-500">
-                                Jelajahi kampus dengan peta interaktif yang memuat informasi detail setiap jalan dan bangunan.
+                                Jelajahi kampus dengan peta interaktif yang memuat informasi setiap jalan dan bangunan.
                             </p>
                         </div>
                         <!-- Feature 2 -->

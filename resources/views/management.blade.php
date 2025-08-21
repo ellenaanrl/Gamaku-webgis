@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Manajemen Laporan - Gamaku WebGIS</title>
-      <!-- Custom Fonts -->
+    <!-- Custom Fonts -->
     <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -24,68 +25,136 @@
         }
     </script>
 </head>
-<body class="antialiased bg-gray-50">
-    <div class="relative min-h-screen">
+
+<body class="antialiased bg-gray-50 font-sans">
+    <div class="relative min-h-screen flex flex-col">
         <!-- Header/Navigation -->
-        <nav class="bg-[#083d62] shadow-sm">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">                <div class="flex justify-between h-16">
-                    <div class="flex items-center space-x-2">
+        <nav class="bg-[#083d62] shadow-sm sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo and Title -->
+                    <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
                         @if(file_exists(public_path('images/logo kuningg.png')))
-                            <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-12 w-auto object-contain"/>
+                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         @endif
-                        <h1 class="text-2xl font-bold text-[#fdcb2c]">Gamaku WebGIS</h1>
+                        <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <a href="/" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium"><i class="fa-solid fa-house"></i> Beranda</a>                        
-                        <a href="{{ route('map') }}" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium"><i class="fa-solid fa-map mr-1"></i>Peta</a>
+
+                    <div class="hidden lg:flex items-center space-x-4">
+                        <a href="/" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium flex items-center focus:outline-none">
+                            <i class="fa-solid fa-house mr-1"></i> Beranda
+                        </a>
+                        <a href="/map" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium whitespace-nowrap">
+                            <i class="fa-solid fa-map mr-1"></i>Peta
+                        </a>
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open" @click.away="open = false"
-                                class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium flex items-center focus:outline-none">
+                                class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium flex items-center focus:outline-none">
                                 <i class="fa-solid fa-table mr-1"></i>Tabel
-                                <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="ml-1 w-3 sm:w-4 h-3 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
                             <div x-show="open" x-transition
                                 class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                                <a href="/info" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-location-dot"></i> Tabel Titik Bangunan</a>
-                                <a href="/infojalan" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-road"></i> Tabel Polygon Jalan</a>
-                                <a href="/infobangunan" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fa-solid fa-draw-polygon"></i> Tabel Polygon Bangunan</a>
+                                <a href="/info" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fa-solid fa-location-dot"></i> Tabel Titik Bangunan
+                                </a>
+                                <a href="/infojalan" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fa-solid fa-road"></i> Tabel informasi jalan
+                                </a>
                             </div>
                         </div>
-                        <a href="/management" class="text-[#fdcb2c] hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium"><i class="fa-solid fa-flag"></i> Laporkan Kerusakan</a>
+                        <a href="/management" class="text-[#fdcb2c] px-3 py-2 text-sm font-medium whitespace-nowrap">
+                            <i class="fa-solid fa-flag"></i> Laporkan Kerusakan
+                        </a>
+
                         @auth
-                        {{-- Jika user login --}}
-                        <div class="flex items-center space-x-6">
+                        <div class="flex items-center space-x-4">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium">
-                                    Logout
+                                    <i class="fa-solid fa-right-from-bracket"></i> Logout
                                 </button>
                             </form>
-
                             <div class="flex items-center text-sm font-medium text-white space-x-2">
                                 <i class="fa-solid fa-user"></i>
-                                <span>{{ Auth::user()->name }}</span>
+                                <span class="hidden xl:inline">{{ Auth::user()->name }}</span>
                             </div>
                         </div>
                         @else
-                        {{-- Jika user belum login --}}
-                        <a href="{{ route('login') }}" class="bg-white text-[#083d62] hover:bg-gray-100 active:bg-[#fdcb2c] px-4 py-2 rounded-md text-sm font-medium">
+                        <a href="{{ route('login') }}" class="bg-white text-[#083d62] hover:bg-gray-100 active:bg-[#fdcb2c] px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap">
                             Masuk/Daftar
                         </a>
                         @endauth
                     </div>
+
+                    <!-- Mobile Menu Button -->
+                    <div class="lg:hidden" x-data="{ mobileOpen: false }">
+                        <button @click="mobileOpen = !mobileOpen" class="text-gray-300 hover:text-white p-2">
+                            <svg x-show="!mobileOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <svg x-show="mobileOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <!-- Mobile Menu -->
+                        <div x-show="mobileOpen" x-transition @click.away="mobileOpen = false"
+                            class="absolute top-16 left-0 right-0 bg-[#083d62] border-t border-[#0a4a75] shadow-lg z-50 mobile-menu">
+                            <div class="px-4 py-2 space-y-2">
+                                <a href="/" class="block text-gray-300 hover:bg-[#0a4a75] px-3 py-2 text-sm">
+                                    <i class="fa-solid fa-house mr-2"></i>Beranda
+                                </a>
+                                <a href="/map" class="block text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">
+                                    <i class="fa-solid fa-map mr-2"></i>Peta
+                                </a>
+                                <div class="border-l-2 border-[#fdcb2c]">
+                                    <div class="block text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">
+                                        <i class="fa-solid fa-table mr-2"></i>Tabel
+                                    </div>
+                                    <a href="/info" class="block text-gray-300 hover:bg-[#0a4a75] px-6 py-2 text-sm">
+                                        <i class="fa-solid fa-location-dot mr-2"></i>Titik Bangunan
+                                    </a>
+                                    <a href="/infojalan" class="block text-gray-300 hover:bg-[#0a4a75] px-6 py-2 text-sm">
+                                        <i class="fa-solid fa-road mr-2"></i>Polygon Jalan
+                                    </a>
+                                </div>
+                                <a href="/management" class="block text-[#fdcb2c] hover:bg-[#0a4a75] px-3 py-2 text-sm font-medium">
+                                    <i class="fa-solid fa-flag mr-2"></i>Laporkan Kerusakan
+                                </a>
+
+                                <div class="border-t border-[#0a4a75] pt-2">
+                                    @auth
+                                    <div class="flex items-center text-white px-3 py-2 text-sm">
+                                        <i class="fa-solid fa-user mr-2"></i>{{ Auth::user()->name }}
+                                    </div>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left bg-red-600 text-white hover:bg-red-700 px-3 py-2 text-sm font-medium rounded">
+                                            <i class="fa-solid fa-right-from-bracket mr-2"></i>Logout
+                                        </button>
+                                    </form>
+                                    @else
+                                    <a href="{{ route('login') }}" class="block bg-white text-[#083d62] hover:bg-gray-100 px-3 py-2 text-sm font-medium rounded mx-3">
+                                        Masuk/Daftar
+                                    </a>
+                                    @endauth
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </nav>        <!-- Main Content with Background -->
+        </nav>
         <main>
             <div class="relative min-h-[80vh]">
                 <!-- Background image container -->
                 <div class="absolute inset-0 z-0">
                     <img src="/UGM.jpeg" alt="UGM Background" class="w-full h-full object-cover">
                 </div>
-                
+
                 <!-- Content with glassmorphism -->
                 <div class="relative z-10">
                     <div class="max-w-5xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
@@ -94,7 +163,7 @@
                                 <h2 class="text-2xl font-bold text-[#083d62] sm:text-4xl font-serif">
                                     Pilih aksi yang ingin Anda lakukan terkait laporan kerusakan
                                 </h2>
-                                
+
                                 <!-- Action Cards -->
                                 <div class="mt-12">
                                     <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 max-w-3xl mx-auto">
@@ -148,4 +217,5 @@
         </footer>
     </div>
 </body>
+
 </html>

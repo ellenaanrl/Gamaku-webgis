@@ -98,8 +98,6 @@ Route::get('/admin/data/polygons', [PolygonController::class, 'index']); // geoj
 Route::post('/admin/store-point', [DrawController::class, 'storePoint']);
 Route::post('/admin/store-polygon', [DrawController::class, 'storePolygon']);
 Route::post('/admin/store-jalan', [MapadminController::class, 'storeJalan']);
-
-
 Route::post('/admin/update-feature', [MapadminController::class, 'updateFeature']);
 Route::post('/admin/delete-feature', [MapadminController::class, 'deleteFeature']);
 
@@ -142,6 +140,7 @@ Route::get('/polygon', [PolygonController::class, 'index']);
 
 Route::get('/jalan', [JalanController::class, 'index']);
 
+Route::get('/report_submitted', 'ReportController@submitted');
 // use Illuminate\Support\Facades\Mail;
 
 // Route::get('/test-email', function () {
