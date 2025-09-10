@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - Gamaku WebGIS</title>
-    
+
     <!-- Custom Fonts -->
     <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -26,6 +27,7 @@
         }
     </script>
 </head>
+
 <body class="antialiased bg-gray-50 font-sans">
     <div class="min-h-screen">
         <!-- Header/Navigation -->
@@ -34,8 +36,8 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo and Title -->
                     <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
-                        @if(file_exists(public_path('images/logo kuningg.png')))
-                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
+                        @if(file_exists(public_path('images/logo.png')))
+                        <img src="{{ asset('images/logo.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         @endif
                         <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
@@ -123,77 +125,89 @@
                     </p>
                 </div>
 
-        <div class="mt-8 mx-4 sm:mx-auto sm:w-full sm:max-w-md">
-    <div class="backdrop-blur-md bg-white/90 py-6 px-4 sm:px-10 shadow-lg rounded-lg border border-white/20">
-                <form class="space-y-6" method="POST" action="{{ route('login') }}">
-                    @csrf
-                    @if ($errors->any())
-                    <div class="bg-red-500/10 text-red-400 p-4 rounded-md border border-red-500/20">
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
+                <div class="mt-8 mx-4 sm:mx-auto sm:w-full sm:max-w-md">
+                    <div class="backdrop-blur-md bg-white/90 py-6 px-4 sm:px-10 shadow-lg rounded-lg border border-white/20">
+                        <form class="space-y-6" method="POST" action="{{ route('login') }}">
+                            @csrf
+                            @if ($errors->any())
+                            <div class="bg-red-500/10 text-red-400 p-4 rounded-md border border-red-500/20">
+                                <ul class="list-disc list-inside">
+                                    @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
 
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-800">Email</label>
-                        <div class="mt-1">
-                            <input id="email" name="email" type="email" :value="old('email')" required 
-                                class="block w-full appearance-none rounded-md bg-white/50 border border-gray-300/50 px-3 py-2 
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-800">Email</label>
+                                <div class="mt-1">
+                                    <input id="email" name="email" type="email" :value="old('email')" required
+                                        class="block w-full appearance-none rounded-md bg-white/50 border border-gray-300/50 px-3 py-2 
                                 placeholder-gray-400 shadow-sm focus:border-[#083d62] focus:outline-none focus:ring-[#083d62] sm:text-sm">
-                        </div>
-                    </div>
+                                </div>
+                            </div>
 
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-800">Password</label>
-                        <div class="mt-1">
-                            <input id="password" name="password" type="password" required 
-                                class="block w-full appearance-none rounded-md bg-white/50 border border-gray-300/50 px-3 py-2 
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-800">Password</label>
+                                <div class="mt-1">
+                                    <input id="password" name="password" type="password" required
+                                        class="block w-full appearance-none rounded-md bg-white/50 border border-gray-300/50 px-3 py-2 
                                 placeholder-gray-400 shadow-sm focus:border-[#083d62] focus:outline-none focus:ring-[#083d62] sm:text-sm">
-                        </div>
-                    </div>
+                                </div>
+                            </div>
 
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <input id="remember" name="remember" type="checkbox" 
-                                class="h-4 w-4 rounded border-gray-300/50 bg-white/50 text-[#083d62] focus:ring-[#083d62]">
-                            <label for="remember" class="ml-2 block text-sm text-gray-800">Ingat saya</label>
-                        </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input id="remember" name="remember" type="checkbox"
+                                        class="h-4 w-4 rounded border-gray-300/50 bg-white/50 text-[#083d62] focus:ring-[#083d62]">
+                                    <label for="remember" class="ml-2 block text-sm text-gray-800">Ingat saya</label>
+                                </div>
 
-                        @if (Route::has('password.request'))
-                        <div class="text-sm">
-                            <a href="{{ route('password.request') }}" 
-                                class="font-medium text-[#083d62] hover:text-[#fdcb2c]">Lupa password?</a>
-                        </div>
-                        @endif
-                    </div>
+                                @if (Route::has('password.request'))
+                                <div class="text-sm">
+                                    <a href="{{ route('password.request') }}"
+                                        class="font-medium text-[#083d62] hover:text-[#fdcb2c]">Lupa password?</a>
+                                </div>
+                                @endif
+                            </div>
 
-                    <div>
-                        <button type="submit" 
-                            class="flex w-full justify-center rounded-md border border-transparent bg-[#083d62] py-3 px-4 
+                            <div>
+                                <button type="submit"
+                                    class="flex w-full justify-center rounded-md border border-transparent bg-[#083d62] py-3 px-4 
                             text-sm font-medium text-white shadow-sm hover:bg-[#083d62]/90 focus:outline-none focus:ring-2 
                             focus:ring-[#fdcb2c] focus:ring-offset-2 transition-all duration-200">
-                            Masuk
-                        </button>
+                                    Masuk
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <p class="text-sm text-gray-400">
-                    © 2025 Gamaku WebGIS. All rights reserved.
-                </p>
+        <!-- Footer -->
+        <footer class="bg-gray-800">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <p class="text-xs sm:text-base text-gray-400">
+                        © Ellena Nurlaila sebagai syarat Proyek Akhir (PA) 2025, serta dibimbing oleh Ari Cahyono, S.Si., Msc.
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Prodi Sistem Informasi Geografis
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Departemen Teknologi Kebumian
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Sekolah Vokasi
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Universitas Gadjah Mada
+                </div>
             </div>
-        </div>
-    </footer>
-</div>
+        </footer>
+    </div>
 </body>
+
 </html>

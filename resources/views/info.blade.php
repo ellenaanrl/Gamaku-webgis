@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,22 +28,22 @@
         body {
             font-family: 'Gama Sans', sans-serif;
         }
-        
+
         /* Custom scrollbar for mobile */
         .custom-scrollbar::-webkit-scrollbar {
             height: 6px;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 3px;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #083d62;
             border-radius: 3px;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #0a4a75;
         }
@@ -51,16 +52,16 @@
         .mobile-card {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
+
         .mobile-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        
+
         .mobile-card dt {
             font-weight: 500;
         }
-        
+
         .mobile-card dd {
             word-wrap: break-word;
         }
@@ -75,12 +76,12 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo and Title -->
                     <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
-                        @if(file_exists(public_path('images/logo kuningg.png')))
-                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
+                        @if(file_exists(public_path('images/logo.png')))
+                        <img src="{{ asset('images/logo.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         @endif
                         <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
-                    
+
                     <!-- Desktop Navigation -->
                     <div class="hidden lg:flex items-center space-x-4">
                         <a href="/" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium whitespace-nowrap">
@@ -113,7 +114,7 @@
                         <a href="/management" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium whitespace-nowrap">
                             <i class="fa-solid fa-flag"></i> Laporkan Kerusakan
                         </a>
-                        
+
                         @auth
                         <div class="flex items-center space-x-4">
                             <form method="POST" action="{{ route('logout') }}">
@@ -144,7 +145,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
-                        
+
                         <!-- Mobile Menu -->
                         <div x-show="mobileOpen" x-transition @click.away="mobileOpen = false"
                             class="absolute top-16 left-0 right-0 bg-[#083d62] border-t border-[#0a4a75] shadow-lg z-50">
@@ -169,7 +170,7 @@
                                 <a href="/management" class="block text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">
                                     <i class="fa-solid fa-flag mr-2"></i>Laporkan Kerusakan
                                 </a>
-                                
+
                                 <div class="border-t border-[#0a4a75] pt-2">
                                     @auth
                                     <div class="flex items-center text-white px-3 py-2 text-sm">
@@ -212,7 +213,7 @@
                 <!-- Filters -->
                 <div class="space-y-4">
                     <div class="w-full">
-                        <input type="text" id="searchInput" placeholder="Cari nama, unit, atau jenis bangunan..." 
+                        <input type="text" id="searchInput" placeholder="Cari nama, unit, atau jenis bangunan..."
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#083d62] focus:border-transparent text-base">
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -312,13 +313,13 @@
                                     <span class="text-xs text-gray-500 uppercase tracking-wide">Bangunan</span>
                                 </div>
                             </div>
-                            
+
                             <div class="space-y-3">
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500 mb-1">Nama Bangunan</dt>
                                     <dd class="text-base font-semibold text-gray-900">{{ $building->nama }}</dd>
                                 </div>
-                                
+
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <dt class="text-sm font-medium text-gray-500 mb-1">Unit</dt>
@@ -357,7 +358,7 @@
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Desktop Pagination -->
                         <div class="hidden sm:flex sm:items-center sm:justify-between">
                             <div>
@@ -387,8 +388,20 @@
         <footer class="bg-gray-800 mt-12">
             <div class="max-w-7xl mx-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
-                    <p class="text-base text-gray-400">
-                        © 2025 Gamaku WebGIS. All rights reserved.
+                    <p class="text-xs sm:text-base text-gray-400">
+                        © Ellena Nurlaila sebagai syarat Proyek Akhir (PA) 2025, serta dibimbing oleh Ari Cahyono, S.Si., Msc.
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Prodi Sistem Informasi Geografis
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Departemen Teknologi Kebumian
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Sekolah Vokasi
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Universitas Gadjah Mada
                     </p>
                 </div>
             </div>
@@ -400,11 +413,11 @@
             const unitFilter = document.getElementById('unitFilter');
             const jenisFilter = document.getElementById('jenisFilter');
             const searchInput = document.getElementById('searchInput');
-            
+
             // Get all rows from both desktop and mobile tables
             const desktopRows = Array.from(document.querySelectorAll('#bangunanTableBody tr'));
             const mobileCards = Array.from(document.querySelectorAll('.mobile-card'));
-            
+
             const totalRecords = document.getElementById('totalRecords');
             const showingFrom = document.getElementById('showingFrom');
             const showingTo = document.getElementById('showingTo');
@@ -477,7 +490,7 @@
                     const namaElement = card.querySelector('dd');
                     const unitElement = card.querySelectorAll('dd')[1];
                     const jenisElement = card.querySelectorAll('dd')[2];
-                    
+
                     if (!namaElement || !unitElement || !jenisElement) return false;
 
                     const namaVal = namaElement.textContent.trim().toLowerCase();
@@ -581,7 +594,7 @@
 
                 for (let i = start; i <= end; i++) {
                     const btn = document.createElement('button');
-                    btn.className = 'relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ' + 
+                    btn.className = 'relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ' +
                         (i === currentPage ? 'z-10 bg-[#083d62] text-white' : 'bg-white text-gray-700 hover:bg-gray-50');
                     btn.textContent = i;
                     btn.onclick = () => {
@@ -649,32 +662,32 @@
 
         // Sorting function
         let sortDirection = {};
-        
+
         function sortTable(columnIndex) {
             const table = document.getElementById('bangunanTable');
             const tbody = table.querySelector('tbody');
             const rows = Array.from(tbody.querySelectorAll('tr'));
-            
+
             // Toggle sort direction
             sortDirection[columnIndex] = sortDirection[columnIndex] === 'asc' ? 'desc' : 'asc';
-            
+
             rows.sort((a, b) => {
                 const aVal = a.cells[columnIndex].textContent.trim();
                 const bVal = b.cells[columnIndex].textContent.trim();
-                
+
                 // For number column (index 0)
                 if (columnIndex === 0) {
-                    return sortDirection[columnIndex] === 'asc' ? 
-                        parseInt(aVal) - parseInt(bVal) : 
+                    return sortDirection[columnIndex] === 'asc' ?
+                        parseInt(aVal) - parseInt(bVal) :
                         parseInt(bVal) - parseInt(aVal);
                 }
-                
+
                 // For text columns
-                return sortDirection[columnIndex] === 'asc' ? 
-                    aVal.localeCompare(bVal) : 
+                return sortDirection[columnIndex] === 'asc' ?
+                    aVal.localeCompare(bVal) :
                     bVal.localeCompare(aVal);
             });
-            
+
             // Re-append sorted rows
             rows.forEach(row => tbody.appendChild(row));
         }
@@ -682,22 +695,22 @@
         // Touch/swipe support for mobile table
         let startX = 0;
         let startY = 0;
-        
+
         document.addEventListener('touchstart', function(e) {
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
         });
-        
+
         document.addEventListener('touchmove', function(e) {
             if (!startX || !startY) return;
-            
+
             const diffX = startX - e.touches[0].clientX;
             const diffY = startY - e.touches[0].clientY;
-            
+
             // Horizontal swipe detection for pagination
             if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
                 const totalPages = Math.ceil(document.querySelectorAll('#bangunanTableBodyMobile tr:not([style*="display: none"])').length / 10);
-                
+
                 if (diffX > 0 && currentPage < totalPages) {
                     // Swipe left - next page
                     currentPage++;
@@ -708,7 +721,7 @@
                     renderTable();
                 }
             }
-            
+
             startX = 0;
             startY = 0;
         });
@@ -718,7 +731,7 @@
             const isMobile = window.innerWidth < 768;
             const desktopTable = document.querySelector('.hidden.md\\:block');
             const mobileTable = document.querySelector('.md\\:hidden');
-            
+
             if (isMobile) {
                 if (desktopTable) desktopTable.style.display = 'none';
                 if (mobileTable) mobileTable.style.display = 'block';
@@ -732,4 +745,5 @@
         handleResize(); // Initial call
     </script>
 </body>
+
 </html>
