@@ -74,8 +74,8 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo and Title -->
                     <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
-                        @if(file_exists(public_path('images/logo kuningg.png')))
-                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
+                        @if(file_exists(public_path('images/logo.png')))
+                        <img src="{{ asset('images/logo.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         @endif
                         <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
@@ -197,8 +197,8 @@
                         <img src="/UGM.jpeg" alt="Banner 1" class="w-full h-56 sm:h-[28rem] object-cover">
                         <div class="absolute inset-0 flex items-center justify-center">
                             <div class="bg-black bg-opacity-40 p-4 sm:p-8 rounded">
-                                <h2 class="text-xl sm:text-3xl md:text-4xl font-bold text-white text-center">Welcome to GamaKu WebGIS</h2>
-                                <p class="mt-2 sm:mt-4 text-white text-base sm:text-lg text-center">Sistem informasi jalan dan bangunan kampus UGM yang dirancang untuk mendukung pengelolaan jalan dan bangunan secara efisien, transparan, dan partisipatif.</p>
+                                <h2 class="text-xl sm:text-3xl md:text-4xl font-bold text-white text-center">Welcome to Gamaku WebGIS</h2>
+                                <p class="mt-2 sm:mt-4 text-white text-lg sm:text-xl md:text-2xl text-center">Sistem informasi jalan dan bangunan kampus UGM yang dirancang untuk mendukung pengelolaan jalan dan bangunan secara efisien, transparan, dan partisipatif.</p>
                             </div>
                         </div>
                     </div>
@@ -206,7 +206,7 @@
                         <img src="/ugm2.jpg" alt="Banner 2" class="w-full h-56 sm:h-[28rem] object-cover">
                         <div class="absolute inset-0 flex items-center justify-center">
                             <div class="bg-black bg-opacity-40 p-4 sm:p-8 rounded">
-                                <h2 class="text-xl sm:text-3xl md:text-4xl font-bold text-white text-center">GamaKu hadir untuk memudahkan kita semua dalam melihat, mengenali, dan merawat kampus yang kita cintai.</h2>
+                                <h2 class="text-xl sm:text-3xl md:text-4xl font-bold text-white text-center">Gamaku hadir untuk memudahkan kita semua dalam melihat, mengenali, dan merawat kampus yang kita cintai.</h2>
                             </div>
                         </div>
                     </div>
@@ -231,17 +231,21 @@
                 <div class="max-w-7xl mx-auto py-8 sm:py-16 px-2 sm:px-6 lg:px-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 justify-center">
                         <!-- Feature 1 -->
-                        <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
-                            <h3 class="text-base sm:text-lg font-medium text-gray-900 flex items-center gap-2">
-                                <i class="fa-regular fa-compass"></i>
-                                Peta Interaktif
-                            </h3>
-                            <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-500">
-                                Jelajahi kampus dengan peta interaktif yang memuat informasi setiap jalan dan bangunan.
-                            </p>
-                        </div>
+                        <a href="/map" class="block">
+                            <div class="bg-gray-50 rounded-lg p-4 sm:p-6 hover:bg-gray-100 cursor-pointer transition">
+                                <h3 class="text-base sm:text-lg font-medium text-gray-900 flex items-center gap-2">
+                                    <i class="fa-regular fa-compass"></i>
+                                    Peta Interaktif
+                                </h3>
+                                <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-500">
+                                    Jelajahi kampus dengan peta interaktif yang memuat informasi setiap jalan dan bangunan.
+                                </p>
+                            </div>
+                        </a>
+
                         <!-- Feature 2 -->
-                        <div class="bg-gray-50 rounded-lg p-4 sm:p-6">
+                         <a href="/report" class="block">
+                        <div class="bg-gray-50 rounded-lg p-4 sm:p-6 hover:bg-gray-100 cursor-pointer transition">
                             <h3 class="text-base sm:text-lg font-medium text-gray-900 flex items-center gap-2">
                                 <i class="fa-solid fa-bullhorn"></i>
                                 Pelaporan Kerusakan Cepat & Mudah
@@ -250,6 +254,7 @@
                                 Laporkan kerusakan fasilitas kapan saja. Cukup isi formulir, sistem akan teruskan ke admin terkait.
                             </p>
                         </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -278,7 +283,19 @@
             <div class="max-w-7xl mx-auto py-6 sm:py-12 px-2 sm:px-4 lg:px-8">
                 <div class="text-center">
                     <p class="text-xs sm:text-base text-gray-400">
-                        © 2025 Gamaku WebGIS. All rights reserved.
+                        © Ellena Nurlaila sebagai syarat Proyek Akhir (PA) 2025, serta dibimbing oleh Ari Cahyono, S.Si., Msc.
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                                   Prodi Sistem Informasi Geografis
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                                   Departemen Teknologi Kebumian
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                                   Sekolah Vokasi
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                                   Universitas Gadjah Mada
                     </p>
                 </div>
             </div>

@@ -78,8 +78,10 @@
 
         /* Tempatkan legenda tepat di bawah layer control ke-2 */
         .leaflet-top.leaflet-left .legend-control {
-            margin-top: 127px !important; /* Adjust the margin-top to position below other controls */
-            margin-left: 12px !important; /* Add some left margin */
+            margin-top: 127px !important;
+            /* Adjust the margin-top to position below other controls */
+            margin-left: 12px !important;
+            /* Add some left margin */
             width: 30px !important;
             height: 30px !important;
             position: absolute !important;
@@ -188,11 +190,11 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo and Title -->
                     <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
-                        @if(file_exists(public_path('images/logo kuningg.png')))
-                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
-                        @endif
+                        <img src="{{ asset('images/logo.png') }}" alt="Gamaku Logo"
+                            class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
+
 
                     <!-- Desktop Navigation -->
                     <div class="hidden lg:flex items-center space-x-4">
@@ -314,13 +316,13 @@
                     <select id="categoryFilter" class="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#083d62] focus:border-transparent text-xs sm:text-sm">
                         <option value="all">Pilih data</option>
                         <option value="point">Titik</option>
-                        <option value="polygon">Polygon</option>
-                        <option value="jalan">Jalan</option>
+                        <option value="polygon">Area</option>
+                        <option value="jalan">Garis</option>
                     </select>
                     <select id="unitFilter" placeholder="Pilih unit" class="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#083d62] focus:border-transparent text-xs sm:text-sm">
                         <option value="">Pilih unit</option>
                     </select>
-                    <select id="subCategoryFilter" placeholder="Pilih kategori"  class="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#083d62] focus:border-transparent text-xs sm:text-sm">
+                    <select id="subCategoryFilter" placeholder="Pilih kategori" class="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#083d62] focus:border-transparent text-xs sm:text-sm">
                         <option value="">Pilih kategori</option>
                     </select>
                 </div>
@@ -332,7 +334,21 @@
     <!-- Footer -->
     <footer class="bg-gray-800 text-gray-400 py-4 sm:py-6">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 text-center">
-            © 2025 Gamaku WebGIS. All rights reserved.
+            <p class="text-xs sm:text-base text-gray-400">
+                © Ellena Nurlaila sebagai syarat Proyek Akhir (PA) 2025, serta dibimbing oleh Ari Cahyono, S.Si., Msc.
+            </p>
+            <p class="text-xs sm:text-base text-gray-400">
+                Prodi Sistem Informasi Geografis
+            </p>
+            <p class="text-xs sm:text-base text-gray-400">
+                Departemen Teknologi Kebumian
+            </p>
+            <p class="text-xs sm:text-base text-gray-400">
+                Sekolah Vokasi
+            </p>
+            <p class="text-xs sm:text-base text-gray-400">
+                Universitas Gadjah Mada
+            </p>
         </div>
     </footer>
 
@@ -611,10 +627,10 @@
                 allJalanFeatures.forEach(f => {
                     if (
                         f.properties &&
-                        (subcat === '' || f.properties.nama === subcat) &&
-                        f.properties.unit
+                        (subcat === '' || f.properties.material === subcat) &&
+                        f.properties.jns_jalan
                     ) {
-                        set.add(f.properties.unit);
+                        set.add(f.properties.jns_jalan);
                     }
                 });
             }
@@ -655,7 +671,12 @@
                 });
             } else if (category === 'jalan') {
                 allJalanFeatures.forEach(f => {
-                    if (f.properties && f.properties.nama) set.add(f.properties.nama);
+                    if (f.properties && f.properties.material) {
+                        // hanya tampilkan material sesuai jns_jalan yang dipilih
+                        if (unit === 'Semua' || f.properties.jns_jalan === unit) {
+                            set.add(f.properties.material);
+                        }
+                    }
                 });
             } else if (category === 'all') {
 
@@ -678,7 +699,12 @@
                     }
                 });
                 allJalanFeatures.forEach(f => {
-                    if (f.properties && f.properties.nama) set.add(f.properties.nama);
+                    if (f.properties && f.properties.material) {
+                        // Only add if it matches the selected jns_jalan
+                        if (unit === 'Semua' || f.properties.jns_jalan === unit) {
+                            set.add(f.properties.material);
+                        }
+                    }
                 });
             }
             Array.from(set).sort().forEach(function(val) {
@@ -746,7 +772,7 @@
                     const matchSub = !selectedSubcat || selectedSubcat === '' || selectedSubcat === 'Semua' || jenisVal === selectedSubcat || nama === selectedSubcat.toLowerCase();
                     return matchSearch && matchUnit && matchSub;
                 });
-                L.geoJSON({
+                const pointlayer = L.geoJSON({
                     type: 'FeatureCollection',
                     features: filtered
                 }, {
@@ -797,6 +823,11 @@
                     }
                 }).addTo(buildingPoints);
                 map.addLayer(buildingPoints);
+
+                // Tambahkan zoom otomatis
+                if (filtered.length > 0) {
+                    map.fitBounds(pointlayer.getBounds());
+                }
             } else if (category === 'polygon') {
                 buildingPolygons.clearLayers();
                 const filtered = allPolygonFeatures.filter(function(f) {
@@ -808,7 +839,7 @@
                     const matchSub = !subcat || nama === subcat;
                     return matchSearch && matchUnit && matchSub;
                 });
-                L.geoJSON({
+                const polygonlayer = L.geoJSON({
                     type: 'FeatureCollection',
                     features: filtered
                 }, {
@@ -873,21 +904,36 @@
 
                 }).addTo(buildingPolygons);
                 map.addLayer(buildingPolygons);
+                if (filtered.length > 0) {
+                    map.fitBounds(polygonlayer.getBounds());
+                }
+
             } else if (category === 'jalan') {
                 jalanPolygons.clearLayers();
+                const selectedUnit = document.getElementById('unitFilter').value; // jns_jalan
+                const selectedSubcat = document.getElementById('subCategoryFilter').value; // material
+
                 const filtered = allJalanFeatures.filter(function(f) {
                     const props = f.properties || {};
                     const nama = (props.nama || '').toLowerCase();
+                    const jnsJalan = props.jns_jalan || '';
+                    const material = props.material || '';
+
                     const matchSearch = !search || nama.includes(search);
-                    const matchSub = !subcat || nama === subcat;
-                    return matchSearch && matchSub;
+                    const matchUnit = !selectedUnit || selectedUnit === '' || selectedUnit === 'Semua' || jnsJalan === selectedUnit;
+                    const matchSub = !selectedSubcat || selectedSubcat === '' || selectedSubcat === 'Semua' || material === selectedSubcat;
+
+                    return matchSearch && matchUnit && matchSub;
                 });
-                L.geoJSON({
+
+                const jalanlayer = L.geoJSON({
                     type: 'FeatureCollection',
                     features: filtered
                 }, {
                     style: {
+                        stroke: false, // hilangkan outline
                         color: "#a30303",
+                        fillOpacity: 1,
                         weight: 2
                     },
                     onEachFeature: function(feature, layer) {
@@ -895,6 +941,11 @@
                     }
                 }).addTo(jalanPolygons);
                 map.addLayer(jalanPolygons);
+
+                if (filtered.length > 0) {
+                    map.fitBounds(jalanlayer.getBounds());
+                }
+
             } else if (category === 'all') {
                 // Show all layers, filter each
                 buildingPoints.clearLayers();
@@ -915,12 +966,13 @@
                     const matchSub = !selectedSubcat || selectedSubcat === '' || selectedSubcat === 'Semua' || jenis === selectedSubcat || nama === selectedSubcat.toLowerCase();
                     return matchSearch && matchUnit && matchSub;
                 });
-                L.geoJSON({
+
+                const pointlayer = L.geoJSON({
                     type: 'FeatureCollection',
                     features: filteredPoints
                 }, {
                     pointToLayer: function(feature, latlng) {
-                        const kategori = feature.properties && feature.properties.jenis_bang ? feature.properties.jenis_bang : 'Lainnya';
+                        const kategori = feature.properties?.jenis_bang || '';
                         const iconMap = {
                             'Gedung Kuliah/Departemen/Fakultas/Program Studi': ['fa-school', '#fdcb2c'],
                             'Tempat Ibadah': ['fa-mosque', '#dc3545'],
@@ -938,15 +990,17 @@
                             'Gedung Olahraga/Stadion': ['fa-dumbbell', '#0d6efd'],
                             'SPAM': ['fa-water', '#0dcaf0'],
                         };
+
                         let matchedIcon = 'fa-map-marker-alt';
                         let iconColor = '#fdcb2c';
                         for (const key in iconMap) {
-                            if (kategori.includes(key)) {
+                            if (kategori && kategori.includes(key)) {
                                 matchedIcon = iconMap[key][0];
                                 iconColor = iconMap[key][1];
                                 break;
                             }
                         }
+
                         const icon = L.divIcon({
                             html: `<i class="fas ${matchedIcon} fa-lg" style="color: ${iconColor}; background-color: white; padding: 4px; border-radius: 30%; box-shadow: 0 0 4px rgba(0,0,0,0.2); display: inline-block; line-height: 1;"></i>`,
                             className: 'custom-div-icon',
@@ -954,6 +1008,7 @@
                             iconAnchor: [15, 15],
                             popupAnchor: [0, -15]
                         });
+
                         return L.marker(latlng, {
                             icon: icon
                         });
@@ -962,17 +1017,8 @@
                         const nama = feature.properties?.nama || 'Tidak diketahui';
                         const jenis = feature.properties?.jenis_bang || '';
                         const unit = feature.properties?.unit || '';
-                        // const foto = feature.properties?.dokumentasi;
-
-                        let popupContent = `<strong>${nama}</strong><br>${jenis}<br>${unit}<br>`;
-
-                        // if (foto) {
-                        //     popupContent += `<img src="${foto}" alt="Foto Dokumentasi" style="max-width: 200px; border-radius: 8px; margin-top: 10px;">`;
-                        // }
-
-                        layer.bindPopup(popupContent);
+                        layer.bindPopup(`<strong>${nama}</strong><br>${jenis}<br>${unit}`);
                     }
-
                 }).addTo(buildingPoints);
                 map.addLayer(buildingPoints);
 
@@ -986,78 +1032,26 @@
                     const matchSub = !selectedSubcat || selectedSubcat === '' || selectedSubcat === 'Semua' || nama === selectedSubcat || nama.toLowerCase() === selectedSubcat.toLowerCase();
                     return matchSearch && matchUnit && matchSub;
                 });
-                const colorMap = {
-                    'Universitas': '#d96512ff', // Orange-red
-                    'Fakultas/Pascasarjana': '#1bba82ff', // Dark blue
-                    'Fasilitas': '#f15db8d6', // Green
-                };
 
-                L.geoJSON({
+                const polygonlayer = L.geoJSON({
                     type: 'FeatureCollection',
                     features: filteredPolygons
                 }, {
                     style: function(feature) {
-                        const nama = feature.properties && (feature.properties.nama || feature.properties.name) ?
-                            (feature.properties.nama || feature.properties.name) :
-                            'Lainnya';
-
+                        const nama = feature.properties?.nama || feature.properties?.name || 'Lainnya';
+                        const colorMap = {
+                            'Universitas': '#d96512ff',
+                            'Fakultas/Pascasarjana': '#1bba82ff',
+                            'Fasilitas': '#f15db8d6',
+                        };
                         return {
-                            color: colorMap[nama] || '#007BFF', // default biru kalau tidak ada di colorMap
+                            color: colorMap[nama] || '#007BFF',
                             weight: 2,
                             fillOpacity: 0.6
                         };
                     },
                     onEachFeature: function(feature, layer) {
-                        const nama = feature.properties?.nama || 'Tidak diketahui';
-                        const jmlLantai = feature.properties?.jml_lantai ? `<br>Jumlah Lantai: ${feature.properties.jml_lantai}` : '';
-                        const foto = feature.properties?.foto;
-                        const unit = feature.properties?.kategori || '';
-
-                        let popupContent = `<div style="min-width: 200px;">
-        <strong>${nama}</strong>${jmlLantai}<br>`;
-
-                        if (foto) {
-                            popupContent += `<img src="${foto}" alt="Foto ${nama}" 
-            style="max-width: 200px; max-height: 150px; width: 100%; 
-            object-fit: cover; border-radius: 8px; margin: 10px 0; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);" 
-            onerror="this.style.display='none';">`;
-                        }
-
-                        // Collect point names inside this polygon
-                        let pointsInside = [];
-                        allPointFeatures.forEach(ptFeature => {
-                            if (ptFeature.geometry && ptFeature.geometry.type === "Point") {
-                                const lat = ptFeature.geometry.coordinates[1];
-                                const lng = ptFeature.geometry.coordinates[0];
-                                const latlng = L.latLng(lat, lng);
-                                if (layer.getBounds().contains(latlng)) {
-                                    const ptName = ptFeature.properties?.nama || 'Tanpa nama';
-                                    const ptJenis = ptFeature.properties?.jenis_bang || '';
-                                    pointsInside.push(getPointIconHTML(ptJenis) + ptName);
-
-                                }
-                            }
-                        });
-
-                        if (pointsInside.length > 0) {
-                            popupContent += `<br><strong>Titik yang berada di bangunan ini:</strong><ul style="margin-top:4px;">`;
-                            pointsInside.forEach(p => {
-                                popupContent += `<li>${p}</li>`;
-                            });
-                            popupContent += `</ul>`;
-                        }
-
-                        popupContent += `<br>
-        <button onclick="laporkanKerusakan(${layer.getBounds().getCenter().lat}, ${layer.getBounds().getCenter().lng})"
-            class="mt-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">
-            Laporkan Kerusakan
-        </button>
-    </div>`;
-
-                        layer.bindPopup(popupContent);
-
-
+                        // popup polygon kamu di sini
                     }
                 }).addTo(buildingPolygons);
                 map.addLayer(buildingPolygons);
@@ -1070,12 +1064,15 @@
                     const matchSub = !selectedSubcat || selectedSubcat === '' || selectedSubcat === 'Semua' || nama === selectedSubcat.toLowerCase();
                     return matchSearch && matchSub;
                 });
-                L.geoJSON({
+
+                const jalanlayer = L.geoJSON({
                     type: 'FeatureCollection',
                     features: filteredJalan
                 }, {
                     style: {
+                        stroke: false, // hilangkan outline
                         color: "#a30303",
+                        fillOpacity: 1,
                         weight: 2
                     },
                     onEachFeature: function(feature, layer) {
@@ -1083,7 +1080,18 @@
                     }
                 }).addTo(jalanPolygons);
                 map.addLayer(jalanPolygons);
+
+                // Gabungkan semua layer untuk zoom
+                const group = L.featureGroup();
+                if (filteredPoints.length > 0) group.addLayer(pointlayer);
+                if (filteredPolygons.length > 0) group.addLayer(polygonlayer);
+                if (filteredJalan.length > 0) group.addLayer(jalanlayer);
+
+                if (group.getLayers().length > 0) {
+                    map.fitBounds(group.getBounds());
+                }
             }
+
         }
         // Fetch and populate all data
         fetch('/point')

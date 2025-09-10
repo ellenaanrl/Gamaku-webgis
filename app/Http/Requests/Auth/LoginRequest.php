@@ -33,7 +33,7 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Attempt to authenticate the request's phs.
      *
      * @throws \Illuminate\Validation\ValidationException
      */

@@ -37,12 +37,12 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo and Title -->
                     <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
-                        @if(file_exists(public_path('images/logo kuningg.png')))
-                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
+                        @if(file_exists(public_path('images/logo.png')))
+                        <img src="{{ asset('images/logo.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         @endif
                         <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
-                    
+
                     <!-- Desktop Navigation -->
                     <div class="hidden lg:flex items-center space-x-4">
                         <a href="/" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium whitespace-nowrap">
@@ -75,7 +75,7 @@
                         <a href="/management" class="text-gray-300 hover:text-white active:text-[#fdcb2c] px-3 py-2 text-sm font-medium whitespace-nowrap">
                             <i class="fa-solid fa-flag"></i> Laporkan Kerusakan
                         </a>
-                        
+
                         @auth
                         <div class="flex items-center space-x-4">
                             <form method="POST" action="{{ route('logout') }}">
@@ -106,7 +106,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
-                        
+
                         <!-- Mobile Menu -->
                         <div x-show="mobileOpen" x-transition @click.away="mobileOpen = false"
                             class="absolute top-16 left-0 right-0 bg-[#083d62] border-t border-[#0a4a75] shadow-lg z-50">
@@ -131,7 +131,7 @@
                                 <a href="/management" class="block text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">
                                     <i class="fa-solid fa-flag mr-2"></i>Laporkan Kerusakan
                                 </a>
-                                
+
                                 <div class="border-t border-[#0a4a75] pt-2">
                                     @auth
                                     <div class="flex items-center text-white px-3 py-2 text-sm">
@@ -207,45 +207,45 @@
                             <div class="text-sm text-gray-700">
                                 Menampilkan {{ $roads->firstItem() }} sampai {{ $roads->lastItem() }} dari {{ $roads->total() }} data
                             </div>
-                            
+
                             {{-- Pagination navigation --}}
                             <nav class="flex items-center space-x-1" aria-label="Pagination">
                                 {{-- Previous Page Link --}}
                                 @if ($roads->onFirstPage())
-                                    <span class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
+                                <span class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed">
+                                    <i class="fas fa-chevron-left"></i>
+                                </span>
                                 @else
-                                    <a href="{{ $roads->previousPageUrl() }}" 
-                                       class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </a>
+                                <a href="{{ $roads->previousPageUrl() }}"
+                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
                                 @endif
 
                                 {{-- Pagination Elements --}}
                                 @foreach ($roads->getUrlRange(1, $roads->lastPage()) as $page => $url)
-                                    @if ($page == $roads->currentPage())
-                                        <span class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-[#083d62] border border-[#083d62] rounded">
-                                            {{ $page }}
-                                        </span>
-                                    @else
-                                        <a href="{{ $url }}" 
-                                           class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 rounded">
-                                            {{ $page }}
-                                        </a>
-                                    @endif
+                                @if ($page == $roads->currentPage())
+                                <span class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-[#083d62] border border-[#083d62] rounded">
+                                    {{ $page }}
+                                </span>
+                                @else
+                                <a href="{{ $url }}"
+                                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 rounded">
+                                    {{ $page }}
+                                </a>
+                                @endif
                                 @endforeach
 
                                 {{-- Next Page Link --}}
                                 @if ($roads->hasMorePages())
-                                    <a href="{{ $roads->nextPageUrl() }}" 
-                                       class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
+                                <a href="{{ $roads->nextPageUrl() }}"
+                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
                                 @else
-                                    <span class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </span>
+                                <span class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed">
+                                    <i class="fas fa-chevron-right"></i>
+                                </span>
                                 @endif
                             </nav>
                         </div>
@@ -259,7 +259,21 @@
         <!-- Footer -->
         <footer class="bg-gray-800 mt-12">
             <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center text-gray-400">
-                © 2025 Gamaku WebGIS. All rights reserved.
+                <p class="text-xs sm:text-base text-gray-400">
+                    © Ellena Nurlaila sebagai syarat Proyek Akhir (PA) 2025, serta dibimbing oleh Ari Cahyono, S.Si., Msc.
+                </p>
+                <p class="text-xs sm:text-base text-gray-400">
+                    Prodi Sistem Informasi Geografis
+                </p>
+                <p class="text-xs sm:text-base text-gray-400">
+                    Departemen Teknologi Kebumian
+                </p>
+                <p class="text-xs sm:text-base text-gray-400">
+                    Sekolah Vokasi
+                </p>
+                <p class="text-xs sm:text-base text-gray-400">
+                    Universitas Gadjah Mada
+                </p>
             </div>
         </footer>
     </div>

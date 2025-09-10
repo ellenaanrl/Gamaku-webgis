@@ -50,8 +50,8 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo and Title -->
                     <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
-                        @if(file_exists(public_path('images/logo kuningg.png')))
-                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
+                        @if(file_exists(public_path('images/logo.png')))
+                        <img src="{{ asset('images/logo.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         @endif
                         <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
@@ -330,8 +330,20 @@
         <footer class="bg-gray-800 mt-12">
             <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
-                    <p class="text-base text-gray-400">
-                        © 2025 Gamaku WebGIS. All rights reserved.
+                    <p class="text-xs sm:text-base text-gray-400">
+                        © Ellena Nurlaila sebagai syarat Proyek Akhir (PA) 2025, serta dibimbing oleh Ari Cahyono, S.Si., Msc.
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Prodi Sistem Informasi Geografis
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Departemen Teknologi Kebumian
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Sekolah Vokasi
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Universitas Gadjah Mada
                     </p>
                 </div>
             </div>
@@ -427,38 +439,38 @@
 
         // Color map for polygon names
         const polygonColorMap = {
-                "Teknik": "#1976d2",
-                "Kehutanan": "#43a047",
-                "Universitas Gadjah Mada": "#fbc02d",
-                "Filsafat": "#e53935",
-                "Ilmu Sosial dan Politik": "#8e24aa",
-                "Teknologi Pertanian": "#00897b",
-                "Pertanian": "#d81b60",
-                "Biologi": "#6d4c41",
-                "Sekolah Vokasi": "#757575",
-                "Hukum": "#d81b60",
-                "Farmasi": "#dac6daff",
-                "Kedokteran": "#1eaf97ff",
-                "Peternakan": "#a5486aff",
-                "Psikologi": "#d371bcff",
-                "MIPA": "#d8e66aff", 
-                "Ekonomika dan Bisnis": "#245d0aff",
-                "Ilmu Budaya": "#cf911dff", 
-                "Kedokteran Hewan": "#671932ff",
-                "Geografi": "#b15131ff",
-                "Kedokteran Gigi": "#2a0fbeff",
-                "Balairung": "#103099ff",
-                "Grha Sabha Pramana": "#1cae57ff",
-                "Stadion": "#da4784ff",
-                "Komplek Rumah Dinas UGM": "#3b2d47ff",
-                "Bengkel": "#423f3fff",
-                "Masjid": "#4fff5bff",
-                "Gelanggang Inovasi dan Kreativitas": "#161313ff",
-                "Fasilitas Kerohanian UGM": "#305c40ff",
-                "Pascasarjana": "#12022eff",
-                "Asrama Mahasiswa": "#7d570bff",
-                "dalam proses pembangunan": "#e3e1b6ff",
-        
+            "Teknik": "#1976d2",
+            "Kehutanan": "#43a047",
+            "Universitas Gadjah Mada": "#fbc02d",
+            "Filsafat": "#e53935",
+            "Ilmu Sosial dan Politik": "#8e24aa",
+            "Teknologi Pertanian": "#00897b",
+            "Pertanian": "#d81b60",
+            "Biologi": "#6d4c41",
+            "Sekolah Vokasi": "#757575",
+            "Hukum": "#d81b60",
+            "Farmasi": "#dac6daff",
+            "Kedokteran": "#1eaf97ff",
+            "Peternakan": "#a5486aff",
+            "Psikologi": "#d371bcff",
+            "MIPA": "#d8e66aff",
+            "Ekonomika dan Bisnis": "#245d0aff",
+            "Ilmu Budaya": "#cf911dff",
+            "Kedokteran Hewan": "#671932ff",
+            "Geografi": "#b15131ff",
+            "Kedokteran Gigi": "#2a0fbeff",
+            "Balairung": "#103099ff",
+            "Grha Sabha Pramana": "#1cae57ff",
+            "Stadion": "#da4784ff",
+            "Komplek Rumah Dinas UGM": "#3b2d47ff",
+            "Bengkel": "#423f3fff",
+            "Masjid": "#4fff5bff",
+            "Gelanggang Inovasi dan Kreativitas": "#161313ff",
+            "Fasilitas Kerohanian UGM": "#305c40ff",
+            "Pascasarjana": "#12022eff",
+            "Asrama Mahasiswa": "#7d570bff",
+            "dalam proses pembangunan": "#e3e1b6ff",
+
         };
 
         // Helper to get color by name

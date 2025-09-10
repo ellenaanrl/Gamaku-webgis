@@ -34,8 +34,8 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo and Title -->
                     <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
-                        @if(file_exists(public_path('images/logo kuningg.png')))
-                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
+                        @if(file_exists(public_path('images/logo.png')))
+                        <img src="{{ asset('images/logo.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         @endif
                         <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
@@ -273,8 +273,20 @@
         <footer class="bg-gray-800">
             <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
-                    <p class="text-base text-gray-400">
-                        © 2025 Gamaku WebGIS. All rights reserved.
+                    <p class="text-xs sm:text-base text-gray-400">
+                        © Ellena Nurlaila sebagai syarat Proyek Akhir (PA) 2025, serta dibimbing oleh Ari Cahyono, S.Si., Msc.
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Prodi Sistem Informasi Geografis
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Departemen Teknologi Kebumian
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Sekolah Vokasi
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Universitas Gadjah Mada
                     </p>
                 </div>
             </div>

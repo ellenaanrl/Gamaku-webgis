@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +9,7 @@
     <!-- Custom Fonts -->
     <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -26,6 +27,7 @@
         }
     </script>
 </head>
+
 <body class="antialiased bg-gray-50 font-sans">
     <div class="min-h-screen">
         <!-- Navigation -->
@@ -34,8 +36,8 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo and Title -->
                     <div class="flex items-center space-x-2 min-w-0 flex-shrink-0">
-                        @if(file_exists(public_path('images/logo kuningg.png')))
-                        <img src="{{ asset('images/logo kuningg.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
+                        @if(file_exists(public_path('images/logo.png')))
+                        <img src="{{ asset('images/logo.png') }}" alt="Gamaku Logo" class="h-8 sm:h-12 w-auto object-contain flex-shrink-0" />
                         @endif
                         <h1 class="text-lg sm:text-2xl font-bold text-[#fdcb2c] truncate">Gamaku</h1>
                     </div>
@@ -128,13 +130,13 @@
                         <form class="space-y-6" method="POST" action="{{ route('register') }}">
                             @csrf
                             @if ($errors->any())
-                                <div class="bg-red-500/10 text-red-400 p-4 rounded-md border border-red-500/20">
-                                    <ul class="list-disc list-inside">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
+                            <div class="bg-red-500/10 text-red-400 p-4 rounded-md border border-red-500/20">
+                                <ul class="list-disc list-inside">
+                                    @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
                             @endif
 
                             <div>
@@ -166,7 +168,7 @@
                             </div>
 
                             <div>
-                                <button type="submit" 
+                                <button type="submit"
                                     class="flex w-full justify-center rounded-md border border-transparent bg-[#083d62] py-3 px-4 
                                     text-sm font-medium text-white shadow-sm hover:bg-[#083d62]/90 focus:outline-none focus:ring-2 
                                     focus:ring-[#fdcb2c] focus:ring-offset-2 transition-all duration-200">
@@ -183,12 +185,24 @@
         <footer class="bg-gray-800">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
-                    <p class="text-sm text-gray-400">
-                        © 2025 Gamaku WebGIS. All rights reserved.
+                    <p class="text-xs sm:text-base text-gray-400">
+                        © Ellena Nurlaila sebagai syarat Proyek Akhir (PA) 2025, serta dibimbing oleh Ari Cahyono, S.Si., Msc.
                     </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Prodi Sistem Informasi Geografis
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Departemen Teknologi Kebumian
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Sekolah Vokasi
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Universitas Gadjah Mada
                 </div>
             </div>
         </footer>
     </div>
 </body>
+
 </html>
