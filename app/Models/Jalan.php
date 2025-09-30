@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jalan extends Model
 {
-    protected $table = 'Jalan_UGM2';
+    protected $table = 'Jalan_Revisi';
     protected $primaryKey = 'id'; // pastikan sesuai
     public $timestamps = false;
 

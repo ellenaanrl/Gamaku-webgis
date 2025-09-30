@@ -258,6 +258,12 @@
                             </select>
                         </div>
                         <div class="mb-4">
+                            <label for="impact" class="block font-medium">Dampak Kerusakan Yang Ditimbulkan</label>
+                            <select name="impact" id="impact" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm text-blue-600" required>
+                                <option value="">Pilih dampak kerusakan</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
                             <label for="floor" class="block font-medium">Lantai lokasi kerusakan</label>
                             <select name="floor" id="floor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm text-blue-600" required>
                                 <option value="">Pilih lantai</option>
@@ -419,10 +425,120 @@
             ],
         };
 
+        const impactOptions = {
+            jalan: {
+                permukaan: [{
+                        value: 'kecelakaan',
+                        text: 'Risiko kecelakaan lalu lintas'
+                    },
+                    {
+                        value: 'kendaraan_rusak',
+                        text: 'Potensi kerusakan kendaraan'
+                    },
+                    {
+                        value: 'macet',
+                        text: 'Kemacetan lalu lintas'
+                    },
+                    {
+                        value: 'genangan',
+                        text: 'Genangan air saat hujan'
+                    }
+                ],
+                marka_rambu: [{
+                        value: 'navigasi_sulit',
+                        text: 'Kesulitan navigasi pengguna jalan'
+                    },
+                    {
+                        value: 'keselamatan',
+                        text: 'Risiko keselamatan lalu lintas'
+                    },
+                    {
+                        value: 'kebingungan',
+                        text: 'Kebingungan pengguna jalan'
+                    }
+                ],
+                trotoar: [{
+                        value: 'pejalan_terganggu',
+                        text: 'Gangguan mobilitas pejalan kaki'
+                    },
+                    {
+                        value: 'disabilitas_terhambat',
+                        text: 'Hambatan akses pengguna disabilitas'
+                    },
+                    {
+                        value: 'keselamatan_pejalan',
+                        text: 'Risiko keselamatan pejalan kaki'
+                    }
+                ]
+            },
+            bangunan: {
+                struktural: [{
+                        value: 'roboh',
+                        text: 'Risiko roboh/runtuh'
+                    },
+                    {
+                        value: 'keselamatan_penghuni',
+                        text: 'Bahaya keselamatan penghuni'
+                    },
+                    {
+                        value: 'kerusakan_aset',
+                        text: 'Kerusakan aset/properti'
+                    }
+                ],
+                non_struktural: [{
+                        value: 'fungsi_terganggu',
+                        text: 'Gangguan fungsi ruangan'
+                    },
+                    {
+                        value: 'kenyamanan',
+                        text: 'Ketidaknyamanan pengguna'
+                    },
+                    {
+                        value: 'estetika',
+                        text: 'Penurunan nilai estetika'
+                    }
+                ],
+                instalasi: [{
+                        value: 'aktivitas_terganggu',
+                        text: 'Gangguan aktivitas sehari-hari'
+                    },
+                    {
+                        value: 'kelistrikan',
+                        text: 'Risiko kelistrikan'
+                    },
+                    {
+                        value: 'kebocoran',
+                        text: 'Kebocoran air/gas'
+                    },
+                    {
+                        value: 'pemborosan',
+                        text: 'Pemborosan energi/sumber daya'
+                    }
+                ],
+                aksesibilitas: [{
+                        value: 'akses_terbatas',
+                        text: 'Keterbatasan akses'
+                    },
+                    {
+                        value: 'evakuasi',
+                        text: 'Hambatan jalur evakuasi'
+                    },
+                    {
+                        value: 'diskriminasi',
+                        text: 'Diskriminasi pengguna disabilitas'
+                    }
+                ]
+            }
+        };
+
         document.getElementById('category').addEventListener('change', function() {
             const selectedCategory = this.value;
-            const subcategorySelect = document.getElementById('subcategory'); // Clear subcategory options
+            const subcategorySelect = document.getElementById('subcategory');
+            const impactSelect = document.getElementById('impact');
+
+            // Clear both subcategory and impact options
             subcategorySelect.innerHTML = '<option value="">Pilih subkategori</option>';
+            impactSelect.innerHTML = '<option value="">Pilih dampak kerusakan</option>';
 
             // Populate subcategory based on selected category
             if (subcategoryOptions[selectedCategory]) {
@@ -434,6 +550,27 @@
                 });
             }
         });
+
+        document.getElementById('subcategory').addEventListener('change', function() {
+            const selectedCategory = document.getElementById('category').value;
+            const selectedSubcategory = this.value;
+            const impactSelect = document.getElementById('impact');
+
+            // Clear impact options
+            impactSelect.innerHTML = '<option value="">Pilih dampak kerusakan</option>';
+
+            // Populate impact options based on selected category and subcategory
+            if (impactOptions[selectedCategory] &&
+                impactOptions[selectedCategory][selectedSubcategory]) {
+                impactOptions[selectedCategory][selectedSubcategory].forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.value;
+                    opt.textContent = option.text;
+                    impactSelect.appendChild(opt);
+                });
+            }
+        });
+        
         let polygonGeoJSON = null; // Variabel global
         let jalanGeoJSON = null; // Variabel global untuk jalan
 

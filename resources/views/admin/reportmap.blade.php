@@ -2,49 +2,71 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Report Map - Gamaku WebGIS</title>
-    <!-- Custom Fonts -->
-    <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Report Map - Gamaku WebGIS</title>
+  <!-- Custom Fonts -->
+  <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'sans': ['Gama Sans', 'sans-serif'],
-                        'serif': ['Gama Serif', 'serif'],
-                    },
-                },
-            },
-        }
-    </script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Gama Sans', 'sans-serif'],
+            'serif': ['Gama Serif', 'serif'],
+          },
+        },
+      },
+    }
+  </script>
 
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Leaflet Draw CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
-    <!-- Leaflet MarkerCluster CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Leaflet Draw CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+  <!-- Leaflet MarkerCluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
-    <style>
-        body {
-            font-family: 'Gama Sans', sans-serif;
-        }
+  <style>
+    body {
+      font-family: 'Gama Sans', sans-serif;
+    }
 
-        #map {
-            height: calc(100vh - 64px);
-            width: 100%;
-            z-index: 0 !important;
-        }
-    </style>
+    #map {
+      height: calc(100vh - 64px);
+      width: 100%;
+      z-index: 0 !important;
+    }
+
+    .custom-div-icon {
+      background: transparent;
+      border: none;
+    }
+
+    .custom-div-icon div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 25px;
+      height: 25px;
+      transition: transform 0.2s;
+    }
+
+    .custom-div-icon div:hover {
+      transform: scale(1.1);
+    }
+
+    .custom-div-icon i {
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body class="bg-gray-50 flex flex-col min-h-screen relative">
@@ -117,109 +139,107 @@
     </div>
   </nav>
 
-        <main>
-            <div id="map"></div>
-        </main>
-    </div>
+  <main>
+    <div id="map"></div>
+  </main>
+  </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Leaflet Draw -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
-    <!-- Leaflet MarkerCluster JS -->
-    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet Draw -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+  <!-- Leaflet MarkerCluster JS -->
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-    <script>
-        var map = L.map('map').setView([-7.7713847, 110.3753189], 16);
+  <script>
+    var map = L.map('map').setView([-7.7713847, 110.3753189], 16);
 
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles © Esri'
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles © Esri'
+    }).addTo(map);
+
+    // Marker Cluster untuk laporan yang belum completed
+    var markersCluster = L.markerClusterGroup();
+
+    // Custom icons
+    const pendingIcon = L.divIcon({
+      html: '<div class="bg-white p-1 rounded-full shadow-lg"><i class="fas fa-exclamation-triangle text-red-500"></i></div>',
+      className: 'custom-div-icon',
+      iconSize: [25, 25],
+      iconAnchor: [12, 12]
+    });
+
+    const completedIcon = L.divIcon({
+      html: '<div class="bg-white p-1 rounded-full shadow-lg"><i class="fa-solid fa-circle-check text-green-500"></i></div>',
+      className: 'custom-div-icon',
+      iconSize: [25, 25],
+      iconAnchor: [12, 12]
+    });
+
+    // Batas AOI UGM
+    fetch('/geojson/AOI_UGM.geojson')
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: {
+            color: '#ffff00',
+            weight: 2,
+            fillOpacity: 0
+          },
+          onEachFeature: function(feature, layer) {
+            layer.bindPopup("Batas wilayah Kampus UGM");
+          }
         }).addTo(map);
+      });
 
-        var markersCluster = L.markerClusterGroup();
+    // Data laporan kerusakan
+    fetch('/admin/reports/geojson')
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.type === 'FeatureCollection') {
+          L.geoJSON(data, {
+            pointToLayer: function(feature, latlng) {
+              const status = feature.properties.status;
+              const icon = status === 'completed' ? completedIcon : pendingIcon;
 
-        fetch('/geojson/AOI_UGM.geojson')
-            .then(res => res.json())
-            .then(data => {
-                L.geoJSON(data, {
-                    style: {
-                        color: '#ffff00',
-                        weight: 2,
-                        fillOpacity: 0
-                    },
-                    onEachFeature: function(feature, layer) {
-                        layer.bindPopup("Batas wilayah Kampus UGM");
-                    }
-                }).addTo(map);
-            })
-            .catch(err => console.error("Gagal memuat AOI_UGM.geojson:", err));
+              const marker = L.marker(latlng, {
+                icon: icon
+              });
 
-        fetch('/admin/reports/geojson')
-            .then(res => res.json())
-            .then(data => {
-                console.log('Damage report geojson:', data);
-                let hasPoint = false;
+              // Pop-up
+              const props = feature.properties;
+              marker.bindPopup(`
+              <div class="p-2">
+                <h3 class="font-bold">${props.category}</h3>
+                <p class="text-sm text-gray-600">${props.subcategory}</p>
+                <p class="text-sm">${props.description}</p>
+                <p class="text-sm mt-2">
+                  <span class="font-semibold">Status:</span> 
+                  <span class="${props.status === 'completed' ? 'text-green-600' : 'text-red-600'}">
+                    ${props.status}
+                  </span>
+                </p>
+              </div>
+            `);
 
-                if (data && data.type === 'FeatureCollection' && Array.isArray(data.features)) {
-                    hasPoint = data.features.some(f => f.geometry && f.geometry.type === 'Point');
-                    var geoJsonLayer = L.geoJSON(data, {
-                        pointToLayer: function (feature, latlng) {
-                            return L.marker(latlng, {
-                                icon: L.divIcon({
-                                    html: '<i class="fas fa-exclamation-triangle" style="font-size:28px;color:#dc3545;padding:6px;border-radius:50%;"></i>',
-                                    className: '',
-                                    iconSize: [35, 35],
-                                    iconAnchor: [14, 14],
-                                    popupAnchor: [0, -14]
-                                })
-                            });
-                        },
-                        onEachFeature: function (feature, layer) {
-                            let popup = `<strong>Lokasi Kerusakan</strong>`;
-                            if (feature.properties) {
-                                if (feature.properties.reporter_name) popup += `<br>Pelapor: ${feature.properties.reporter_name}`;
-                                if (feature.properties.category) popup += `<br>Kategori: ${feature.properties.category}`;
-                                if (feature.properties.subcategory) popup += `<br>Subkategori: ${feature.properties.subcategory}`;
-                                if (feature.properties.description) popup += `<br>${feature.properties.description}`;
-                                if (feature.properties.created_at) popup += `<br><small>${feature.properties.created_at}</small>`;
-                            }
-                            layer.bindPopup(popup);
-                        }
-                    });
-                    markersCluster.addLayer(geoJsonLayer);
-                }
-                else if (Array.isArray(data)) {
-                    data.forEach(function (item) {
-                        if (item.latitude && item.longitude) {
-                            hasPoint = true;
-                            var marker = L.marker([item.latitude, item.longitude], {
-                                icon: L.divIcon({
-                                    html: '<i class="fas fa-exclamation-triangle fa-lg" style="color:#dc3545;background:white;padding:4px;border-radius:50%;box-shadow:0 0 4px rgba(0,0,0,0.2);"></i>',
-                                    className: '',
-                                    iconSize: [28, 28],
-                                    iconAnchor: [14, 14],
-                                    popupAnchor: [0, -14]
-                                })
-                            }).bindPopup(`<strong>Lokasi Kerusakan</strong><br>${item.description || ''}<br><small>${item.created_at || ''}</small>`);
+              // Masukkan ke cluster kalau belum completed
+              if (status !== 'completed') {
+                markersCluster.addLayer(marker);
+                return null; // jangan tambahkan ke map langsung
+              } else {
+                return marker; // completed langsung ditampilkan di map
+              }
+            }
+          }).addTo(map);
 
-                            markersCluster.addLayer(marker);
-                        }
-                    });
-                }
-
-                if (!hasPoint) {
-                    console.warn('No damage report points found in geojson or array.');
-                    var msgDiv = document.createElement('div');
-                    msgDiv.innerHTML = '<div style="position:absolute;top:80px;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(255,255,255,0.95);padding:16px 32px;border-radius:8px;box-shadow:0 2px 8px #0002;font-size:1.1rem;color:#dc3545;">Tidak ada lokasi laporan kerusakan ditemukan.<br>Periksa data atau endpoint GeoJSON.</div>';
-                    document.body.appendChild(msgDiv);
-                    setTimeout(function () { msgDiv.remove(); }, 6000);
-                }
-
-                map.addLayer(markersCluster);
-            })
-            .catch(err => {
-                console.error('Error fetching damage report geojson:', err);
-            });
-    </script>
+          // Tambahkan cluster ke map
+          map.addLayer(markersCluster);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching damage report geojson:', err);
+      });
+  </script>
 </body>
+
 </html>

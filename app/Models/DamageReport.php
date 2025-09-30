@@ -17,6 +17,7 @@ class DamageReport extends Model
         'email',
         'category',
         'subcategory',
+        'impact',
         'floor',
         'description',
         'latitude',

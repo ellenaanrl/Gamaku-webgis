@@ -207,10 +207,22 @@
 
         <!-- Footer -->
         <footer class="bg-gray-800">
-            <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
                 <div class="text-center">
-                    <p class="text-base text-gray-400">
-                        © 2025 Gamaku WebGIS. All rights reserved.
+                    <p class="text-xs sm:text-base text-gray-400">
+                        © Ellena Nurlaila sebagai syarat Proyek Akhir (PA) 2025, serta dibimbing oleh Ari Cahyono, S.Si., Msc.
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Prodi Sistem Informasi Geografis
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Departemen Teknologi Kebumian
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Sekolah Vokasi
+                    </p>
+                    <p class="text-xs sm:text-base text-gray-400">
+                        Universitas Gadjah Mada
                     </p>
                 </div>
             </div>

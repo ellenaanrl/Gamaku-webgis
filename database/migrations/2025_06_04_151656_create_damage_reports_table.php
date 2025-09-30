@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('category');
             $table->string('subcategory');
+            $table->json('impact')->after('subcategory');
             $table->text('description');
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);

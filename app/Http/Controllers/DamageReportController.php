@@ -24,7 +24,8 @@ class DamageReportController extends Controller
             'email' => 'required|email|max:255',
             'category' => 'required|string|max:255',
             'subcategory' => 'required|string|max:255',
-            'floor'=> 'required|string|max:255',
+            'impact' => 'required|string|max:255',
+            'floor' => 'required|string|max:255',
             'description' => 'required|string',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
@@ -51,6 +52,7 @@ class DamageReportController extends Controller
                 'user_id' => Auth::id(),
                 'category' => $request->category,
                 'subcategory' => $request->subcategory,
+                'impact' => $request->impact,
                 'floor' => $request->floor,
                 'description' => $request->description,
                 'latitude' => $request->latitude,
@@ -62,20 +64,19 @@ class DamageReportController extends Controller
 
             Log::info('Damage report created successfully', ['report_id' => $report->id]);
 
-            
+
             try {
                 Mail::to('gamakuugm@gmail.com')->send(new NewReportNotification($report));
                 Log::info('Email notification sent to admin');
             } catch (\Exception $e) {
                 Log::error('Failed to send email: ' . $e->getMessage());
             }
-
-  } catch (\Exception $e) {
-    Log::error('Failed to create damage report: ' . $e->getMessage());
-    return redirect()->back()
-        ->withInput()
-        ->with('error', 'Failed to submit report: ' . $e->getMessage()); // DEBUG
-}
+        } catch (\Exception $e) {
+            Log::error('Failed to create damage report: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to submit report: ' . $e->getMessage()); // DEBUG
+        }
 
         // Redirect to status_report page after successful submission
         return redirect()->route('status.report')->with('report_submitted', true);
@@ -115,24 +116,28 @@ class DamageReportController extends Controller
                 ],
                 'properties' => [
                     'id' => $report->id,
-                    'reporter_name' => $report->reporter_name,
                     'category' => $report->category,
                     'subcategory' => $report->subcategory,
-                    'floor' => $report->floor,
                     'description' => $report->description,
-                    'lokasi' => $report->lokasi,
-                    'status' => $report->status,
-                    'created_at' => $report->created_at,
-                    'photo_path' => $report->photo_path ? Storage::url($report->photo_path) : null,
+                    'impact' => $report->impact,
+                    'status' => $report->status, // Make sure status is included
+                    'created_at' => $report->created_at->format('d-m-Y H:i')
                 ]
             ];
         });
 
-        $geojson = [
+        return response()->json([
             'type' => 'FeatureCollection',
-            'features' => $features,
-        ];
-
-        return response()->json($geojson);
+            'features' => $features
+        ]);
+    }
+    public function destroy(DamageReport $report)
+    {
+        try {
+            $report->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false], 500);
+        }
     }
 }
