@@ -6,7 +6,7 @@
     <title>Peta - Gamaku WebGIS</title> <!-- Custom Fonts -->
     <link href="{{ asset('css/fonts.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,7 +29,7 @@
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
     <style>
         body {
             font-family: 'Gama Sans', sans-serif;
@@ -78,7 +78,7 @@
 
         /* Tempatkan legenda tepat di bawah layer control ke-2 */
         .leaflet-top.leaflet-left .legend-control {
-            margin-top: 127px !important;
+            margin-top: 175px !important;
             /* Adjust the margin-top to position below other controls */
             margin-left: 12px !important;
             /* Add some left margin */
@@ -100,6 +100,7 @@
             width: auto !important;
             min-width: 32px !important;
             max-width: 32px !important;
+            max-height: 400px;
         }
 
         .legend-toggle-btn {
@@ -177,6 +178,48 @@
             border: 1px solid #888;
             margin-right: 6px;
             display: inline-block;
+        }
+
+        #routeSummary {
+            font-size: 0.9rem;
+            max-width: 300px;
+        }
+
+        #routeSummary i {
+            margin-right: 8px;
+            color: #ae2109ff;
+        }
+
+        .leaflet-routing-container {
+            background: white;
+            padding: 1rem;
+            margin: 10px !important;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .leaflet-routing-alt {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .one-way-button {
+            transition: all 0.3s ease;
+        }
+
+        .one-way-button:hover {
+            background-color: #f8f9fa !important;
+            color: #000000ff !important;
+        }
+
+        .one-way-button.active {
+            background-color: #083d62 !important;
+            color: white !important;
+        }
+
+        /* Style for the one-way path lines */
+        .leaflet-interactive {
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
@@ -326,6 +369,30 @@
                         <option value="">Pilih kategori</option>
                     </select>
                 </div>
+                <div class="mb-4 bg-white p-4 rounded-lg shadow">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1">
+                            <label for="startPoint" class="block text-sm font-medium text-gray-700 mb-1">Titik Awal</label>
+                            <input type="text" id="startPoint" placeholder="Klik pada peta atau masukkan koordinat"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                        </div>
+                        <div class="flex-1">
+                            <label for="endPoint" class="block text-sm font-medium text-gray-700 mb-1">Titik Akhir</label>
+                            <input type="text" id="endPoint" placeholder="Klik pada peta atau masukkan koordinat"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="calculateRoute()"
+                                class="bg-[#083d62] text-white px-4 py-2 rounded-md hover:bg-[#0a4a75] text-sm">
+                                <i class="fas fa-route"></i> Cari Rute
+                            </button>
+                            <button onclick="clearRoute()"
+                                class="ml-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 text-sm">
+                                <i class="fas fa-times"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div id="map" class="border-4 rounded-lg" style="border-color: #083d62;"></div>
             </div>
         </main>
@@ -374,6 +441,8 @@
             layers: [satellite] // default layer (Esri satellite)
         });
 
+        // Replace the AOI UGM fetch and layer creation code with this:
+
         fetch('/geojson/AOI_UGM.geojson')
             .then(res => res.json())
             .then(data => {
@@ -381,11 +450,12 @@
                     style: {
                         color: '#ffff00',
                         weight: 2,
-                        fillOpacity: 0
+                        fillOpacity: 0,
+                        interactive: false // Make layer non-interactivea
                     },
-                    onEachFeature: function(feature, layer) {
-                        layer.bindPopup("Batas wilayah Kampus UGM");
-                    }
+                    // Remove the click handler and popup
+                    interactive: false, // Disable all interactions
+                    pointerEvents: 'none' // Prevent mouse events
                 }).addTo(map);
             })
             .catch(err => console.error("Gagal memuat AOI_UGM.geojson:", err));
@@ -421,7 +491,6 @@
         // Add the combined layer control to the map (base layers and overlays)
         L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-
         // 3. Toggle logic
         function togglePanel(id) {
             const panel = document.getElementById(id);
@@ -440,6 +509,79 @@
             return div;
         };
         locateBtn.addTo(map);
+
+        // Add this after your existing layer/control declarations
+        let oneWayLayer = null;
+
+        // Create custom control for the one-way paths button
+        L.Control.OneWayButton = L.Control.extend({
+            onAdd: function(map) {
+                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                const button = L.DomUtil.create('a', 'one-way-button', container);
+
+                button.innerHTML = '<i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>';
+                button.href = '#';
+                button.title = 'Tampilkan Jalur Satu Arah';
+
+                button.style.width = '34px';
+                button.style.height = '34px';
+                button.style.display = 'flex';
+                button.style.alignItems = 'center';
+                button.style.justifyContent = 'center';
+                button.style.backgroundColor = 'white';
+                button.style.color = '#000000ff';
+                button.style.fontSize = '16px';
+
+                L.DomEvent.on(button, 'click', function(e) {
+                    L.DomEvent.preventDefault(e);
+                    button.classList.toggle('active');
+                    toggleOneWayPaths();
+                });
+
+                return container;
+            }
+        });
+
+        // Function to toggle one-way paths visibility
+        function toggleOneWayPaths() {
+            if (oneWayLayer) {
+                map.removeLayer(oneWayLayer);
+                oneWayLayer = null;
+            } else {
+                fetch('/geojson/UGM_OneWay.geojson')
+                    .then(response => response.json())
+                    .then(data => {
+                        oneWayLayer = L.geoJSON(data, {
+                            style: {
+                                color: '#790606ff',
+                                weight: 3,
+                                fillOpacity: 1,
+                            },
+                            onEachFeature: function(feature, layer) {
+                                if (feature.properties) {
+                                    layer.bindPopup(`
+                                <div class="p-2">
+                                    <strong>Jalur Satu Arah</strong><br>
+                                    ${feature.properties.Nama || 'Tidak ada nama'}
+                                </div>
+                            `);
+                                }
+                            }
+                        }).addTo(map);
+                    })
+                    .catch(error => {
+                        console.error('Error loading one-way paths:', error);
+                        alert('Gagal memuat data jalur satu arah');
+                    });
+            }
+        }
+
+        // Add the custom control to the map
+        const oneWayButton = new L.Control.OneWayButton({
+            position: 'topleft'
+        });
+        map.addControl(oneWayButton);
+
 
         setTimeout(() => {
             var locateBtnEl = document.getElementById('locateMeBtn');
@@ -547,6 +689,19 @@
                             <span>Fasilitas</span>
                         </div>
                     </div>
+
+                    <div class="legend-section">
+    <h4><i class="fa-solid fa-road"></i> Legenda Jalan</h4>
+    <div class="legend-item">
+        <span class="legend-color-box" style="background-color:#4B4B4B;"></span>
+        <span>Aspal</span>
+    </div>
+    <div class="legend-item">
+        <span class="legend-color-box" style="background-color:#B0B0B0;"></span>
+        <span>Paving Block</span>
+    </div>
+</div>
+
                 </div>
             `;
 
@@ -628,9 +783,9 @@
                     if (
                         f.properties &&
                         (subcat === '' || f.properties.material === subcat) &&
-                        f.properties.jns_jalan
+                        f.properties.jns_jln
                     ) {
-                        set.add(f.properties.jns_jalan);
+                        set.add(f.properties.jns_jln);
                     }
                 });
             }
@@ -673,7 +828,7 @@
                 allJalanFeatures.forEach(f => {
                     if (f.properties && f.properties.material) {
                         // hanya tampilkan material sesuai jns_jalan yang dipilih
-                        if (unit === 'Semua' || f.properties.jns_jalan === unit) {
+                        if (unit === 'Semua' || f.properties.jns_jln === unit) {
                             set.add(f.properties.material);
                         }
                     }
@@ -701,7 +856,7 @@
                 allJalanFeatures.forEach(f => {
                     if (f.properties && f.properties.material) {
                         // Only add if it matches the selected jns_jalan
-                        if (unit === 'Semua' || f.properties.jns_jalan === unit) {
+                        if (unit === 'Semua' || f.properties.jns_jln === unit) {
                             set.add(f.properties.material);
                         }
                     }
@@ -910,13 +1065,13 @@
 
             } else if (category === 'jalan') {
                 jalanPolygons.clearLayers();
-                const selectedUnit = document.getElementById('unitFilter').value; // jns_jalan
+                const selectedUnit = document.getElementById('unitFilter').value; // jns_jln
                 const selectedSubcat = document.getElementById('subCategoryFilter').value; // material
 
                 const filtered = allJalanFeatures.filter(function(f) {
                     const props = f.properties || {};
                     const nama = (props.nama || '').toLowerCase();
-                    const jnsJalan = props.jns_jalan || '';
+                    const jnsJalan = props.jns_jln || '';
                     const material = props.material || '';
 
                     const matchSearch = !search || nama.includes(search);
@@ -930,11 +1085,27 @@
                     type: 'FeatureCollection',
                     features: filtered
                 }, {
-                    style: {
-                        stroke: false, // hilangkan outline
-                        color: "#a30303",
-                        fillOpacity: 1,
-                        weight: 2
+                    style: function(feature) {
+                        const material = feature.properties?.material?.toLowerCase() || '';
+                        if (material === "aspal") {
+                            return {
+                                color: "#656363ff",
+                                fillOpacity: 1,
+                                weight: 2
+                            }; // abu-abu gelap
+                        } else if (material === "paving block") {
+                            return {
+                                color: "#B0B0B0",
+                                fillOpacity: 1,
+                                weight: 2
+                            }; // abu-abu muda
+                        } else {
+                            return {
+                                color: "#808080",
+                                fillOpacity: 1,
+                                weight: 2
+                            }; // default abu-abu
+                        }
                     },
                     onEachFeature: function(feature, layer) {
                         layer.bindPopup(`<strong>${feature.properties.nama}</strong>`);
@@ -1038,21 +1209,64 @@
                     features: filteredPolygons
                 }, {
                     style: function(feature) {
-                        const nama = feature.properties?.nama || feature.properties?.name || 'Lainnya';
-                        const colorMap = {
-                            'Universitas': '#d96512ff',
-                            'Fakultas/Pascasarjana': '#1bba82ff',
-                            'Fasilitas': '#f15db8d6',
-                        };
+                        const kategori = feature.properties && feature.properties.kategori ? feature.properties.kategori : 'Lainnya';
                         return {
-                            color: colorMap[nama] || '#007BFF',
+                            color: getKategoriColor(kategori),
                             weight: 2,
                             fillOpacity: 0.6
                         };
                     },
                     onEachFeature: function(feature, layer) {
-                        // popup polygon kamu di sini
+                        const nama = feature.properties?.nama || 'Tidak diketahui';
+                        const jmlLantai = feature.properties?.jml_lantai ? `<br>Jumlah Lantai: ${feature.properties.jml_lantai}` : '';
+                        const foto = feature.properties?.foto;
+                        const unit = feature.properties?.kategori || '';
+
+                        let popupContent = `<div style="min-width: 200px;">
+        <strong>${nama}</strong>${jmlLantai}<br>`;
+
+                        if (foto) {
+                            popupContent += `<img src="${foto}" alt="Foto ${nama}" 
+            style="max-width: 200px; max-height: 150px; width: 100%; 
+            object-fit: cover; border-radius: 8px; margin: 10px 0; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);" 
+            onerror="this.style.display='none';">`;
+                        }
+
+                        // Collect point names inside this polygon
+                        let pointsInside = [];
+                        allPointFeatures.forEach(ptFeature => {
+                            if (ptFeature.geometry && ptFeature.geometry.type === "Point") {
+                                const lat = ptFeature.geometry.coordinates[1];
+                                const lng = ptFeature.geometry.coordinates[0];
+                                const latlng = L.latLng(lat, lng);
+                                if (layer.getBounds().contains(latlng)) {
+                                    const ptName = ptFeature.properties?.nama || 'Tanpa nama';
+                                    const ptJenis = ptFeature.properties?.jenis_bang || '';
+                                    pointsInside.push(getPointIconHTML(ptJenis) + ptName);
+
+                                }
+                            }
+                        });
+
+                        if (pointsInside.length > 0) {
+                            popupContent += `<br><strong>Titik yang berada di bangunan ini:</strong><ul style="margin-top:4px;">`;
+                            pointsInside.forEach(p => {
+                                popupContent += `<li>${p}</li>`;
+                            });
+                            popupContent += `</ul>`;
+                        }
+
+                        popupContent += `<br>
+        <button onclick="laporkanKerusakan(${layer.getBounds().getCenter().lat}, ${layer.getBounds().getCenter().lng})"
+            class="mt-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">
+            Laporkan Kerusakan
+        </button>
+    </div>`;
+
+                        layer.bindPopup(popupContent);
                     }
+
                 }).addTo(buildingPolygons);
                 map.addLayer(buildingPolygons);
 
@@ -1069,11 +1283,27 @@
                     type: 'FeatureCollection',
                     features: filteredJalan
                 }, {
-                    style: {
-                        stroke: false, // hilangkan outline
-                        color: "#a30303",
-                        fillOpacity: 1,
-                        weight: 2
+                    style: function(feature) {
+                        const material = feature.properties?.material?.toLowerCase() || '';
+                        if (material === "aspal") {
+                            return {
+                                color: "#4B4B4B",
+                                fillOpacity: 1,
+                                weight: 2
+                            }; // abu-abu gelap
+                        } else if (material === "paving block") {
+                            return {
+                                color: "#B0B0B0",
+                                fillOpacity: 1,
+                                weight: 2
+                            }; // abu-abu muda
+                        } else {
+                            return {
+                                color: "#808080",
+                                fillOpacity: 1,
+                                weight: 2
+                            }; // default abu-abu
+                        }
                     },
                     onEachFeature: function(feature, layer) {
                         layer.bindPopup(`<strong>${feature.properties.nama}</strong>`);
@@ -1158,8 +1388,41 @@
             .then(res => res.json())
             .then(data => {
                 allJalanFeatures = data.features || [];
-                if (document.getElementById('categoryFilter').value === 'jalan') updateSubCategoryOptions();
+
+                // Tambahkan langsung ke layer jalan dengan style berdasarkan material
+                const jalanlayer = L.geoJSON(data, {
+                    style: function(feature) {
+                        const material = feature.properties?.material?.toLowerCase() || '';
+                        if (material === "aspal") {
+                            return {
+                                color: "#4B4B4B",
+                                weight: 2
+                            }; // abu-abu gelap
+                        } else if (material === "paving block") {
+                            return {
+                                color: "#B0B0B0",
+                                weight: 2
+                            }; // abu-abu muda
+                        } else {
+                            return {
+                                color: "#808080",
+                                weight: 2
+                            }; // default abu-abu
+                        }
+                    },
+                    onEachFeature: function(feature, layer) {
+                        layer.bindPopup(`<strong>${feature.properties.nama}</strong><br>
+                                 Material: ${feature.properties.material || 'Tidak diketahui'}`);
+                    }
+                }).addTo(jalanPolygons);
+
+                if (document.getElementById('categoryFilter').value === 'jalan') {
+                    updateSubCategoryOptions();
+                }
             });
+
+
+
         // Event listeners
         document.getElementById('globalSearchInput').addEventListener('input', unifiedFilterAndDisplay);
 
@@ -1207,6 +1470,162 @@
 
             return kategoriColors[kategori] || '#6C757D'; // Default gray for unknown categories
         }
+
+        // Add/update these functions in your existing script section
+
+        // Initialize variables at the top of your script
+        let routingControl = null;
+        let startMarker = null;
+        let endMarker = null;
+        let isSettingStart = true;
+
+        function initializeRouting() {
+            // Remove any existing click handlers first
+            map.off('click');
+
+            // Add new click handler
+            map.on('click', function(e) {
+                if (!document.getElementById('startPoint').value || !document.getElementById('endPoint').value) {
+                    const latlng = e.latlng;
+                    if (isSettingStart) {
+                        setStartPoint(latlng);
+                    } else {
+                        setEndPoint(latlng);
+                    }
+                    isSettingStart = !isSettingStart;
+                }
+            });
+        }
+
+        function setStartPoint(latlng) {
+            document.getElementById('startPoint').value = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+            if (startMarker) {
+                map.removeLayer(startMarker);
+            }
+            startMarker = L.marker(latlng, {
+                icon: L.divIcon({
+                    html: '<div style="background-color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"><i class="fas fa-play-circle" style="color: #198754;"></i></div>',
+                    className: '',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                })
+            });
+            startMarker.addTo(map);
+        }
+
+        function setEndPoint(latlng) {
+            document.getElementById('endPoint').value = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+            if (endMarker) {
+                map.removeLayer(endMarker);
+            }
+            endMarker = L.marker(latlng, {
+                icon: L.divIcon({
+                    html: '<div style="background-color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"><i class="fas fa-flag-checkered" style="color: #dc3545;"></i></div>',
+                    className: '',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                })
+            });
+            endMarker.addTo(map);
+        }
+
+        function calculateRoute() {
+            const start = document.getElementById('startPoint').value;
+            const end = document.getElementById('endPoint').value;
+
+            if (!start || !end) {
+                alert('Silakan pilih titik awal dan titik akhir terlebih dahulu');
+                return;
+            }
+
+            try {
+                const startCoords = start.split(',').map(coord => parseFloat(coord.trim()));
+                const endCoords = end.split(',').map(coord => parseFloat(coord.trim()));
+
+                if (routingControl) {
+                    map.removeControl(routingControl);
+                }
+
+                routingControl = L.Routing.control({
+                    waypoints: [
+                        L.latLng(startCoords[0], startCoords[1]),
+                        L.latLng(endCoords[0], endCoords[1])
+                    ],
+                    router: L.Routing.osrmv1({
+                        serviceUrl: 'https://router.project-osrm.org/route/v1'
+                    }),
+                    lineOptions: {
+                        styles: [{
+                            color: '#c9310fff',
+                            opacity: 1,
+                            weight: 6
+                        }]
+                    },
+                    showAlternatives: false,
+                    altLineOptions: {
+                        styles: [{
+                            color: '#b73e07ff',
+                            opacity: 0.4,
+                            weight: 4
+                        }]
+                    },
+                    createMarker: function() {
+                        return null;
+                    }
+                }).addTo(map);
+
+                routingControl.on('routesfound', function(e) {
+                    const routes = e.routes;
+                    const summary = routes[0].summary;
+                    const distance = Math.round(summary.totalDistance / 1000 * 10) / 10;
+                    const time = Math.round(summary.totalTime / 60);
+
+                    // Update or create route summary
+                    const existingSummary = document.getElementById('routeSummary');
+                    if (existingSummary) existingSummary.remove();
+
+                    const summaryDiv = document.createElement('div');
+                    summaryDiv.id = 'routeSummary';
+                    summaryDiv.className = 'bg-white p-4 rounded-lg shadow-lg fixed bottom-4 right-4 z-50';
+                    summaryDiv.innerHTML = `
+                <h3 class="font-bold text-[#083d62] mb-2">Informasi Rute</h3>
+                <p><i class="fas fa-road mr-2"></i>Jarak: ${distance} km</p>
+                <p><i class="fas fa-clock mr-2"></i>Waktu tempuh: ${time} menit</p>
+            `;
+                    document.body.appendChild(summaryDiv);
+                });
+
+            } catch (error) {
+                console.error('Error calculating route:', error);
+                alert('Terjadi kesalahan saat menghitung rute. Silakan coba lagi.');
+            }
+        }
+
+        function clearRoute() {
+            if (routingControl) {
+                map.removeControl(routingControl);
+                routingControl = null;
+            }
+            if (startMarker) {
+                map.removeLayer(startMarker);
+                startMarker = null;
+            }
+            if (endMarker) {
+                map.removeLayer(endMarker);
+                endMarker = null;
+            }
+            document.getElementById('startPoint').value = '';
+            document.getElementById('endPoint').value = '';
+            isSettingStart = true;
+
+            const summaryDiv = document.getElementById('routeSummary');
+            if (summaryDiv) {
+                summaryDiv.remove();
+            }
+        }
+
+        // Initialize routing when the map is ready
+        initializeRouting();
     </script>
 </body>
 

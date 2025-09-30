@@ -180,6 +180,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No ↕️</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Jalan ↕️</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Panjang Jalan (meter) ↕️</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lebar Jalan (meter) ↕️</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Material Jalan ↕️</th>
                             </tr>
                         </thead>
@@ -188,7 +189,8 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $road->nama }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $road->pjg_jln_bulat }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $road->pjg_jln_bu }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $road->lbr_jln_bu }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $road->material }}</td>
                             </tr>
                             @empty

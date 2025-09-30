@@ -196,7 +196,7 @@
             return {
               color: "#ff0000",
               weight: 3,
-              opacity: 0.8
+              fillOpacity: 1
             };
           }
         },

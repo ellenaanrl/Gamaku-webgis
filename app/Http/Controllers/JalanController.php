@@ -9,8 +9,8 @@ class JalanController extends Controller
 {
     public function index()
     {
-        $data = DB::table('Jalan_UGM2')
-            ->select('nama', 'pjg_jln_bulat', 'material', 'jns_jalan', DB::raw('ST_AsGeoJSON(ST_Transform(geom, 4326)) as geojson'))
+        $data = DB::table('Jalan_Revisi')
+            ->select('nama', 'material', 'pjg_jln_bu', 'lbr_jln_bu', 'jns_jln',  DB::raw('ST_AsGeoJSON(ST_Transform(geom, 4326)) as geojson'))
             ->get();
 
         $features = $data->map(function ($row) {
@@ -19,9 +19,10 @@ class JalanController extends Controller
                 'geometry' => json_decode($row->geojson),
                 'properties' => [
                     'nama' => $row->nama,
-                    'pjg_jln_bulat' => $row->pjg_jln_bulat,
                     'material' => $row->material,
-                    'jns_jalan' => $row->jns_jalan
+                    'pjg_jln_bu' => $row->pjg_jln_bu,
+                    'lbr_jln_bu' => $row->pjg_jln_bu,
+                    'jns_jln' => $row->jns_jln,
                 ]
             ];
         });

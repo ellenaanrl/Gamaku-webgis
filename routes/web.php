@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(function () {    //'role:admin' harus dihapus
 
     Route::get('/admin/reports', [App\Http\Controllers\DamageReportController::class, 'index'])->name('admin.reports');
     Route::patch('/admin/reports/{report}/status', [App\Http\Controllers\DamageReportController::class, 'updateStatus'])->name('admin.reports.update-status');
+    Route::delete('/admin/reports/{report}', [App\Http\Controllers\DamageReportController::class, 'destroy'])->name('reports.destroy');
 });
 
 Route::get('/admin/data/points', [PointController::class, 'index']);
