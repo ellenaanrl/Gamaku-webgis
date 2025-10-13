@@ -18,8 +18,8 @@ class UserSeeder extends Seeder
          User::create([
             'name' => 'User',
             'email' => 'user@ugm.ac.id',
-            'password' => Hash::make('user1234'), // password yang dienkripsi biasanya 8 karakter atau lebih
-            'role' => 'user', // pastikan kolom 'role' sudah ditambahkan ke tabel users
+            'password' => Hash::make('user1234'),
+            'role' => 'user', 
         ]);
     }
 }

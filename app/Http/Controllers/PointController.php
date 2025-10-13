@@ -8,18 +8,15 @@ use App\Models\Point;
 
 class PointController extends Controller
 {
-    /**
-     * Mengembalikan data GeoJSON untuk titik dari tabel Titik_UGM
-     */
+    
     public function index()
     {
-        // Ambil data dan konversi geometry ke GeoJSON
         $points = Point::selectRaw("*, ST_AsGeoJSON(ST_Transform(geom, 4326)) as geom_json")->get();
 
         $features = [];
 
         foreach ($points as $point) {
-            // Pastikan GeoJSON tersedia
+
             if (!isset($point->geom_json)) {
                 continue;
             }
@@ -29,7 +26,6 @@ class PointController extends Controller
                 continue;
             }
 
-            // Tambahkan ke daftar fitur
             $features[] = [
                 'type' => 'Feature',
                 'id' => $point->id,
@@ -43,16 +39,12 @@ class PointController extends Controller
             ];
         }
 
-        // Return sebagai GeoJSON FeatureCollection
         return response()->json([
             'type' => 'FeatureCollection',
             'features' => $features,
         ]);
     }
 
-    /**
-     * Menampilkan tabel informasi titik (halaman info)
-     */
     public function showTable()
     {
         $buildings = Point::all();

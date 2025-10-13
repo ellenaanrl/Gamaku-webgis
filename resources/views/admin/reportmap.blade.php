@@ -163,17 +163,10 @@
 
     // Custom icons
     const pendingIcon = L.divIcon({
-      html: '<div class="bg-white p-1 rounded-full shadow-lg"><i class="fas fa-exclamation-triangle text-red-500"></i></div>',
+      html: '<div class="bg-white p-2 rounded-full shadow-lg"><i class="fas fa-exclamation-triangle text-red-500"></i></div>',
       className: 'custom-div-icon',
-      iconSize: [25, 25],
-      iconAnchor: [12, 12]
-    });
-
-    const completedIcon = L.divIcon({
-      html: '<div class="bg-white p-1 rounded-full shadow-lg"><i class="fa-solid fa-circle-check text-green-500"></i></div>',
-      className: 'custom-div-icon',
-      iconSize: [25, 25],
-      iconAnchor: [12, 12]
+      iconSize: [35, 35],
+      iconAnchor: [17, 17]
     });
 
     // Batas AOI UGM
@@ -197,38 +190,37 @@
       .then(response => response.json())
       .then(data => {
         if (data && data.type === 'FeatureCollection') {
+          // Replace with this simpler version that only shows pending reports
           L.geoJSON(data, {
             pointToLayer: function(feature, latlng) {
-              const status = feature.properties.status;
-              const icon = status === 'completed' ? completedIcon : pendingIcon;
+              // Skip completed reports entirely
+              if (feature.properties.status === 'completed' ||
+                feature.properties.status === 'selesai') {
+                return null;
+              }
 
               const marker = L.marker(latlng, {
-                icon: icon
+                icon: pendingIcon
               });
 
               // Pop-up
               const props = feature.properties;
               marker.bindPopup(`
-              <div class="p-2">
-                <h3 class="font-bold">${props.category}</h3>
-                <p class="text-sm text-gray-600">${props.subcategory}</p>
-                <p class="text-sm">${props.description}</p>
-                <p class="text-sm mt-2">
-                  <span class="font-semibold">Status:</span> 
-                  <span class="${props.status === 'completed' ? 'text-green-600' : 'text-red-600'}">
+        <div class="p-2">
+            <h3 class="font-bold">${props.category}</h3>
+            <p class="text-sm text-gray-600">${props.subcategory}</p>
+            <p class="text-sm">${props.description}</p>
+            <p class="text-sm mt-2">
+                <span class="font-semibold">Status:</span> 
+                <span class="text-red-600">
                     ${props.status}
-                  </span>
-                </p>
-              </div>
-            `);
+                </span>
+            </p>
+        </div>
+        `);
 
-              // Masukkan ke cluster kalau belum completed
-              if (status !== 'completed') {
-                markersCluster.addLayer(marker);
-                return null; // jangan tambahkan ke map langsung
-              } else {
-                return marker; // completed langsung ditampilkan di map
-              }
+              markersCluster.addLayer(marker);
+              return null;
             }
           }).addTo(map);
 
