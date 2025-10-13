@@ -221,6 +221,24 @@
         .leaflet-interactive {
             transition: opacity 0.3s ease;
         }
+
+        #resultList li {
+            margin-bottom: 4px;
+            transition: color 0.2s ease;
+        }
+
+        #resultList li:hover {
+            color: #083d62;
+            text-decoration: underline;
+        }
+
+        #paginationControls button {
+            transition: background-color 0.2s ease;
+        }
+
+        #paginationControls button:hover:not(:disabled) {
+            background-color: #e2e8f0;
+        }
     </style>
 </head>
 
@@ -354,6 +372,9 @@
         <main class="max-w-7xl mx-auto py-2 sm:py-4 px-2 sm:px-6 lg:px-8">
             <div class="px-2 py-2 sm:px-0">
                 <h2 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">Peta Interaktif Jalan dan Bangunan </h2>
+                <p class="text-gray-700 text-sm sm:text-base mb-2">
+                    Gunakan kolom pencarian dan filter data di bawah ini untuk menampilkan data titik, area, atau sesuai kebutuhan Anda.
+                </p>
                 <div class="mb-2 sm:mb-4 flex flex-col sm:flex-row gap-2 sm:gap-4">
                     <input type="text" id="globalSearchInput" placeholder="Cari nama, unit, jenis, atau nama jalan/polygon..." class="w-full sm:w-64 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#083d62] focus:border-transparent text-xs sm:text-sm">
                     <select id="categoryFilter" class="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#083d62] focus:border-transparent text-xs sm:text-sm">
@@ -368,7 +389,24 @@
                     <select id="subCategoryFilter" placeholder="Pilih kategori" class="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#083d62] focus:border-transparent text-xs sm:text-sm">
                         <option value="">Pilih kategori</option>
                     </select>
+
+                    <!-- Tombol Search baru -->
+                    <button id="searchButton"
+                        class="bg-[#083d62] text-white px-4 py-2 rounded-lg hover:bg-[#0a4a75] text-sm">
+                        <i class="fas fa-search"></i> Cari
+                    </button>
                 </div>
+                <!-- Wadah hasil pencarian -->
+                <div id="searchResults" class="bg-white p-3 rounded-lg shadow hidden mt-2">
+                    <h3 class="font-semibold text-gray-700 mb-2 text-sm sm:text-base">Hasil Pencarian:</h3>
+                    <ul id="resultList" class="list-disc pl-5 text-gray-600 text-sm"></ul>
+                    <div id="paginationControls" class="flex justify-center items-center gap-3 mt-3 text-sm text-gray-700 hidden">
+                        <button id="prevPage" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50">Sebelumnya</button>
+                        <span id="pageInfo"></span>
+                        <button id="nextPage" class="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50">Selanjutnya</button>
+                    </div>
+                </div>
+
                 <div class="mb-4 bg-white p-4 rounded-lg shadow">
                     <div class="flex flex-col sm:flex-row gap-4">
                         <div class="flex-1">
@@ -978,11 +1016,15 @@
                     }
                 }).addTo(buildingPoints);
                 map.addLayer(buildingPoints);
-
-                // Tambahkan zoom otomatis
                 if (filtered.length > 0) {
                     map.fitBounds(pointlayer.getBounds());
+                    displayResultList(filtered, 'point');
+                } else {
+                    displayResultList([], 'point'); // tampilkan pesan tidak ada data
+                    alert('Tidak ada data ditemukan untuk filter yang dipilih.');
                 }
+
+
             } else if (category === 'polygon') {
                 buildingPolygons.clearLayers();
                 const filtered = allPolygonFeatures.filter(function(f) {
@@ -1061,7 +1103,13 @@
                 map.addLayer(buildingPolygons);
                 if (filtered.length > 0) {
                     map.fitBounds(polygonlayer.getBounds());
+                    displayResultList(filtered, 'polygon');
+                } else {
+                    displayResultList([], 'polygon');
+                    alert('Tidak ada data ditemukan untuk filter yang dipilih.');
                 }
+
+
 
             } else if (category === 'jalan') {
                 jalanPolygons.clearLayers();
@@ -1112,10 +1160,15 @@
                     }
                 }).addTo(jalanPolygons);
                 map.addLayer(jalanPolygons);
-
                 if (filtered.length > 0) {
                     map.fitBounds(jalanlayer.getBounds());
+                    displayResultList(filtered, 'jalan');
+                } else {
+                    displayResultList([], 'jalan');
+                    alert('Tidak ada data ditemukan untuk filter yang dipilih.');
                 }
+
+
 
             } else if (category === 'all') {
                 // Show all layers, filter each
@@ -1319,10 +1372,108 @@
 
                 if (group.getLayers().length > 0) {
                     map.fitBounds(group.getBounds());
+                    const combinedResults = [...filteredPoints, ...filteredPolygons, ...filteredJalan];
+                    displayResultList(combinedResults, 'all');
+                } else {
+                    displayResultList([], 'all');
+                    alert('Tidak ada data ditemukan.');
                 }
+
+
             }
 
         }
+
+        function displayResultList(features, type) {
+            const container = document.getElementById('searchResults');
+            const list = document.getElementById('resultList');
+
+            // Elemen pagination (pastikan sudah ada di HTML)
+            const pagination = document.getElementById('paginationControls');
+            const pageInfo = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+
+            // Variabel untuk pagination
+            let currentPage = 1;
+            const itemsPerPage = 5;
+
+            // Simpan hasil data
+            let currentResults = features || [];
+
+            // Fungsi untuk render halaman tertentu
+            function renderPage(page) {
+                list.innerHTML = '';
+
+                if (!currentResults || currentResults.length === 0) {
+                    container.classList.remove('hidden');
+                    pagination.classList.add('hidden');
+                    list.innerHTML = '<li class="text-gray-500">Tidak ada hasil ditemukan.</li>';
+                    return;
+                }
+
+                const startIndex = (page - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedResults = currentResults.slice(startIndex, endIndex);
+
+                paginatedResults.forEach(f => {
+                    const props = f.properties || {};
+                    const nama = props.nama || props.name || 'Tanpa nama';
+                    const unit = props.unit || props.kategori || '';
+                    const jenis = props.jenis_bang || props.material || '';
+
+                    const li = document.createElement('li');
+                    li.classList.add('cursor-pointer', 'hover:text-[#083d62]');
+                    li.innerHTML = `<strong>${nama}</strong>${unit ? ' - ' + unit : ''}${jenis ? ' (' + jenis + ')' : ''}`;
+
+                    // Klik: zoom ke fitur
+                    li.addEventListener('click', () => {
+                        if (f.geometry.type === 'Point') {
+                            const lat = f.geometry.coordinates[1];
+                            const lng = f.geometry.coordinates[0];
+                            map.setView([lat, lng], 18);
+                        } else if (['Polygon', 'MultiPolygon', 'LineString'].includes(f.geometry.type)) {
+                            const layer = L.geoJSON(f);
+                            map.fitBounds(layer.getBounds());
+                        }
+                    });
+
+                    list.appendChild(li);
+                });
+
+                // Update pagination info
+                const totalPages = Math.ceil(currentResults.length / itemsPerPage);
+                pageInfo.textContent = `Halaman ${page} dari ${totalPages}`;
+
+                // Tampilkan / sembunyikan tombol pagination
+                pagination.classList.toggle('hidden', totalPages <= 1);
+                prevBtn.disabled = page === 1;
+                nextBtn.disabled = page === totalPages;
+
+                container.classList.remove('hidden');
+            }
+
+            // Event untuk tombol pagination
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage(currentPage);
+                }
+            };
+
+            nextBtn.onclick = () => {
+                const totalPages = Math.ceil(currentResults.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderPage(currentPage);
+                }
+            };
+
+            // Render pertama kali
+            renderPage(currentPage);
+        }
+
+
         // Fetch and populate all data
         fetch('/point')
             .then(function(response) {
@@ -1424,37 +1575,28 @@
 
 
         // Event listeners
-        document.getElementById('globalSearchInput').addEventListener('input', unifiedFilterAndDisplay);
+        // --- FILTER EVENTS ---
+        // Hanya update pilihan dropdown (tanpa menampilkan hasil di peta)
+        document.getElementById('globalSearchInput').addEventListener('input', () => {
+            // pengguna bisa isi dulu keyword, tapi belum tampil di peta
+        });
 
         document.getElementById('categoryFilter').addEventListener('change', function() {
-            // When category changes, update unit options first, then subcategory options
             updateUnitFilterOptions();
             updateSubCategoryOptions();
-
-            // Reset both unit and subcategory filters to default
             document.getElementById('unitFilter').value = 'Semua';
             document.getElementById('subCategoryFilter').value = 'Semua';
-
-            // Apply the filters to update the map display
-            unifiedFilterAndDisplay();
         });
 
         document.getElementById('unitFilter').addEventListener('change', function() {
-            // When unit changes, update subcategory options based on selected unit
             updateSubCategoryOptions();
-
-            // Reset the subcategory filter value since the options have changed
             document.getElementById('subCategoryFilter').value = 'Semua';
-
-            // Apply filters to update the display
-            unifiedFilterAndDisplay();
         });
 
         document.getElementById('subCategoryFilter').addEventListener('change', function() {
-            // When subcategory changes, just apply the filters
-            // No need to update other filter options
-            unifiedFilterAndDisplay();
+            // tidak langsung tampil, hanya ubah dropdown
         });
+
 
         function laporkanKerusakan(lat, lng) {
             const url = `/report?lat=${lat}&lng=${lng}`;
@@ -1626,6 +1768,10 @@
 
         // Initialize routing when the map is ready
         initializeRouting();
+
+        document.getElementById('searchButton').addEventListener('click', function() {
+            unifiedFilterAndDisplay();
+        });
     </script>
 </body>
 
